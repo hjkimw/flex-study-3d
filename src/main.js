@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { AnimationMixer } from "three";
 import gsap from "gsap";
 import { Player } from "./modeljs/Player.js";
 import { Basic } from "./modeljs/Basic.js";
@@ -8,7 +7,9 @@ import { debounce } from "es-toolkit";
 
 const meshes = [];
 let animationCameraLock = false,
-  isKeydown = false;
+  isKeydown = false,
+  isJumping = false,
+  pendingDestination = null;
 
 const textureLoader = new THREE.TextureLoader();
 const floorTexture = textureLoader.load("/assets/images/bg.jpg");
@@ -179,16 +180,26 @@ function checkIntersects() {
 
   for (const item of intersects) {
     if (item.object.name === "floor") {
-      destinationPoint.x = item.point.x;
-      destinationPoint.z = item.point.z;
-      destinationPoint.y = 0.3;
+      const newDestination = {
+        x: item.point.x,
+        z: item.point.z,
+        y: 0.3
+      };
 
-      player.modelMesh.lookAt(destinationPoint);
+      // 점프 중에는 목적지만 저장하고 즉시 회전/이동 X
+      if (isJumping) {
+        pendingDestination = newDestination;
+      } else {
+        destinationPoint.x = newDestination.x;
+        destinationPoint.z = newDestination.z;
+        destinationPoint.y = newDestination.y;
+        player.modelMesh.lookAt(destinationPoint);
+        player.walking = true;
+        pendingDestination = null;
+      }
 
-      player.walking = true;
-
-      pointer.position.x = destinationPoint.x;
-      pointer.position.z = destinationPoint.z;
+      pointer.position.x = newDestination.x;
+      pointer.position.z = newDestination.z;
     }
 
     break;
@@ -291,6 +302,7 @@ window.addEventListener("keydown", ({ code }) => {
       if (!isKeydown) {
         animationCameraLock = true;
         isKeydown = true;
+        isJumping = true;
 
         player.walkingAction.stop();
         player.defaultAction.stop();
@@ -304,6 +316,19 @@ window.addEventListener("keydown", ({ code }) => {
         setTimeout(() => {
           animationCameraLock = false;
           isKeydown = false;
+          isJumping = false;
+
+          // 점프 중에 클릭한 목적지가 있으면 이동 시작하게 서ㄹ정
+          if (pendingDestination) {
+            destinationPoint.x = pendingDestination.x;
+            destinationPoint.z = pendingDestination.z;
+            destinationPoint.y = pendingDestination.y;
+
+            player.modelMesh.lookAt(destinationPoint);
+            
+            player.walking = true;
+            pendingDestination = null;
+          }
         }, tl.duration() * 1500);
       }
       break;
