@@ -1,22 +1,22 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { AnimationMixer } from 'three';
-import gsap from 'gsap';
-import { Player } from './modeljs/Player.js';
-import { Basic } from './modeljs/Basic.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { AnimationMixer } from "three";
+import gsap from "gsap";
+import { Player } from "./modeljs/Player.js";
+import { Basic } from "./modeljs/Basic.js";
 
 const meshes = [];
 let animationCameraLock = false,
   isKeydown = false;
 
 const textureLoader = new THREE.TextureLoader();
-const floorTexture = textureLoader.load('/assets/images/bg.jpg');
+const floorTexture = textureLoader.load("/assets/images/bg.jpg");
 floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.x = 10;
 floorTexture.repeat.y = 10;
 
-const canvas = document.querySelector('#three-canvas');
+const canvas = document.querySelector("#three-canvas");
 const renderer = new THREE.WebGLRenderer({
   canvas,
   antialias: true,
@@ -75,10 +75,10 @@ function calculateMousePosition(e) {
 }
 
 // Light
-const ambientLight = new THREE.AmbientLight('white', 1);
+const ambientLight = new THREE.AmbientLight("white", 1);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight('white', 0.2);
+const directionalLight = new THREE.DirectionalLight("white", 0.2);
 const directionalLightOriginPosition = new THREE.Vector3(1, 1, 1);
 
 // Light Setting
@@ -108,7 +108,7 @@ const floorMesh = new THREE.Mesh(
     map: floorTexture,
   })
 );
-floorMesh.name = 'floor';
+floorMesh.name = "floor";
 floorMesh.rotation.x = -Math.PI / 2;
 floorMesh.receiveShadow = true;
 scene.add(floorMesh);
@@ -124,10 +124,11 @@ const player = new Player({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: '/assets/models/robot.animated.glb',
-  name: 'player',
+  modelSrc: "/assets/models/robot.animated.glb",
+  hideMeshNames: ["?", "smile", "cry", "angry", "curve", "default_1", "default_2", "sweating"],
+  name: "player",
   callback() {
-    const directionalLight = new THREE.DirectionalLight('white', 1);
+    const directionalLight = new THREE.DirectionalLight("white", 1);
 
     directionalLight.castShadow = true;
 
@@ -141,8 +142,8 @@ const roomOne = new Basic({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: '/assets/models/room_4.glb',
-  name: 'room',
+  modelSrc: "/assets/models/room_4.glb",
+  name: "room",
   position: {
     x: -10,
     y: 0,
@@ -162,7 +163,7 @@ const roomOne = new Basic({
 const pointer = new THREE.Mesh(
   new THREE.PlaneGeometry(2, 2),
   new THREE.MeshBasicMaterial({
-    color: 'orange',
+    color: "orange",
     transparent: true,
     opacity: 0.35,
   })
@@ -176,7 +177,7 @@ function checkIntersects() {
   const intersects = raycaster.intersectObjects(meshes);
 
   for (const item of intersects) {
-    if (item.object.name === 'floor') {
+    if (item.object.name === "floor") {
       destinationPoint.x = item.point.x;
       destinationPoint.z = item.point.z;
       destinationPoint.y = 0.3;
@@ -217,7 +218,6 @@ function draw() {
       player.modelMesh.position.z.toFixed(1) === destinationPoint.z.toFixed(1)
     ) {
       player.walking = false;
-
     }
 
     !animationCameraLock && camera.lookAt(player.modelMesh.position);
@@ -259,34 +259,34 @@ function draw() {
 draw();
 
 // Mouse Event
-canvas.addEventListener('mousedown', (e) => {
+canvas.addEventListener("mousedown", (e) => {
   isPressed = true;
   calculateMousePosition(e);
 });
 
-canvas.addEventListener('mouseup', () => (isPressed = false));
+canvas.addEventListener("mouseup", () => (isPressed = false));
 
-canvas.addEventListener('mousemove', (e) => isPressed && calculateMousePosition(e));
+canvas.addEventListener("mousemove", (e) => isPressed && calculateMousePosition(e));
 
 // Touch Event
-canvas.addEventListener('touchstart', (e) => {
+canvas.addEventListener("touchstart", (e) => {
   isPressed = true;
   calculateMousePosition(e.touches[0]);
 });
 
-canvas.addEventListener('touchend', () => (isPressed = false));
+canvas.addEventListener("touchend", () => (isPressed = false));
 
-canvas.addEventListener('touchmove', (e) => {
+canvas.addEventListener("touchmove", (e) => {
   if (isPressed) {
     calculateMousePosition(e.touches[0]);
   }
 });
 
-window.addEventListener('keydown', ({ code }) => {
+window.addEventListener("keydown", ({ code }) => {
   if (!player.modelMesh) return;
 
   switch (code.toUpperCase()) {
-    case 'SPACE':
+    case "SPACE":
       if (!isKeydown) {
         animationCameraLock = true;
         isKeydown = true;
@@ -295,10 +295,10 @@ window.addEventListener('keydown', ({ code }) => {
         player.defaultAction.stop();
         player.jumpAction.play();
 
-        const tl = gsap.timeline({ defaults: { duration: 0.5, ease: 'none' } });
+        const tl = gsap.timeline({ defaults: { duration: 0.5, ease: "none" } });
         tl.to(player.modelMesh.position, { y: 4 });
         tl.to(player.modelMesh.position, { y: initY });
-        tl.eventCallback('onComplete', () => player.defaultAction.play());
+        tl.eventCallback("onComplete", () => player.defaultAction.play());
 
         setTimeout(() => {
           animationCameraLock = false;
@@ -311,4 +311,3 @@ window.addEventListener('keydown', ({ code }) => {
       break;
   }
 });
- 
