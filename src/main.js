@@ -4,6 +4,7 @@ import { AnimationMixer } from "three";
 import gsap from "gsap";
 import { Player } from "./modeljs/Player.js";
 import { Basic } from "./modeljs/Basic.js";
+import { debounce } from "es-toolkit";
 
 const meshes = [];
 let animationCameraLock = false,
@@ -311,3 +312,18 @@ window.addEventListener("keydown", ({ code }) => {
       break;
   }
 });
+
+
+function resize(){
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const aspect = window.innerWidth / window.innerHeight;
+  camera.left = -aspect;
+  camera.right = aspect;
+  camera.top = 1;
+  camera.bottom = -1;
+
+  camera.updateProjectionMatrix();
+}
+
+window.addEventListener("resize", debounce(resize, 100));
