@@ -12,6 +12,9 @@ let animationCameraLock = false,
   isJumping = false,
   pendingDestination = null;
 
+/* -------------------------------------------------------------------------- */
+/*                                Texture Setting                             */
+/* -------------------------------------------------------------------------- */
 const textureLoader = new THREE.TextureLoader();
 const floorTexture = textureLoader.load("/assets/images/bg.jpg");
 floorTexture.wrapS = THREE.RepeatWrapping;
@@ -20,6 +23,9 @@ floorTexture.repeat.x = 10;
 floorTexture.repeat.y = 10;
 
 
+/* -------------------------------------------------------------------------- */
+/*                                Renderer Setting                            */
+/* -------------------------------------------------------------------------- */
 const canvas = document.querySelector("#three-canvas");
 const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -31,9 +37,15 @@ renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+/* -------------------------------------------------------------------------- */
+/*                                Scene Setting                               */
+/* -------------------------------------------------------------------------- */
 const scene = new THREE.Scene();
 
 
+/* -------------------------------------------------------------------------- */
+/*                                Camera Setting                              */
+/* -------------------------------------------------------------------------- */
 const camera = new THREE.OrthographicCamera(
   -(window.innerWidth / window.innerHeight),
   window.innerWidth / window.innerHeight,
@@ -70,6 +82,9 @@ camera.updateProjectionMatrix();
 scene.add(camera);
 
 
+/* -------------------------------------------------------------------------- */
+/*                                Raycaster Setting                           */
+/* -------------------------------------------------------------------------- */
 const raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2(), // mouse coordinates
   destinationPoint = new THREE.Vector3(); // destination point
@@ -82,6 +97,9 @@ function calculateMousePosition(e) {
 }
 
 
+/* -------------------------------------------------------------------------- */
+/*                                Light Setting                               */
+/* -------------------------------------------------------------------------- */
 const ambientLight = new THREE.AmbientLight("white", 1);
 scene.add(ambientLight);
 
@@ -107,6 +125,10 @@ directionalLight.shadow.camera.far = 100;
 
 scene.add(directionalLight);
 
+
+/* -------------------------------------------------------------------------- */
+/*                                Footer Objects                               */
+/* -------------------------------------------------------------------------- */
 const floorMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(100, 100),
   new THREE.MeshBasicMaterial({
@@ -123,6 +145,9 @@ meshes.push(floorMesh);
 const gltfLoader = new GLTFLoader();
 
 
+/* -------------------------------------------------------------------------- */
+/*                                Pointer Objects                               */
+/* -------------------------------------------------------------------------- */
 const pointer = new THREE.Mesh(
   new THREE.PlaneGeometry(2, 2),
   new THREE.MeshBasicMaterial({
@@ -137,6 +162,9 @@ pointer.receiveShadow = true;
 scene.add(pointer);
 
 
+/* -------------------------------------------------------------------------- */
+/*                                Mesh Objects                                */
+/* -------------------------------------------------------------------------- */
 let initY = null;
 
 // Player
@@ -158,11 +186,15 @@ const player = new Player({
 });
 
 
-// spot
+/* -------------------------------------------------------------------------- */
+/*                                Spot Mesh Setting                           */
+/* -------------------------------------------------------------------------- */
+const spotMeshes = [];
+
 const spotMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(3, 3),
   new THREE.MeshStandardMaterial({
-    color: 'red',
+    color: 'yellow',
     transparent: true,
     opacity: 0.5,
   })
@@ -176,6 +208,10 @@ spotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
 scene.add(spotMesh);
 
 
+/* -------------------------------------------------------------------------- */
+/*                                Mesh Objects                                */
+/* -------------------------------------------------------------------------- */
+
 // room one
 const roomOne = new Basic({
   scene,
@@ -184,7 +220,7 @@ const roomOne = new Basic({
   modelSrc: "/assets/models/Room_4__.glb",
   name: "room",
   position: {
-    x: -5,
+    x: -10,
     y: -5,
     z: 0,
   },
@@ -233,7 +269,6 @@ const roomTwo = new Basic({
     this.modelMesh.add(directionalLight);
   }
 });
-
 
 
 function checkIntersects() {
@@ -285,6 +320,9 @@ function raycasting() {
 
 const clock = new THREE.Clock();
 
+/* -------------------------------------------------------------------------- */
+/*                                Draw Loop                                   */
+/* -------------------------------------------------------------------------- */
 function draw() {
   const delta = clock.getDelta();
 
@@ -353,7 +391,7 @@ function draw() {
           
           roomOne.visibile = true;
           
-          spotMesh.material.color.set('green');
+          spotMesh.material.color.set('seagreen');
 
           // 모델이 위로 올라오고
           const tl = gsap.timeline();
@@ -365,10 +403,10 @@ function draw() {
           
           // player 위치 조정하고
           tl.to(player.modelMesh.position, {
-            duration: 0.5,
+            duration: 1,
             y: 1,
-            ease: 'none',
-          }, '<+.5');
+            ease: 'Bounce.easeOut',
+          }, '<');
 
           // 카메라의 위치 조정하고
           gsap.to(camera.position, {
@@ -387,7 +425,7 @@ function draw() {
           
           roomOne.visibile = false;
           
-          spotMesh.material.color.set('red');
+          spotMesh.material.color.set('yellow');
 
           const tl = gsap.timeline();
 
@@ -399,9 +437,9 @@ function draw() {
 
           // player 위치 원상복구 하고
           tl.to(player.modelMesh.position, {
-            duration: 0.5,
+            duration: 1,
             y: .3,
-            ease: 'none',
+            ease: 'Bounce.easeOut',
           }, '<');
           
           // 카메라 위치 원상복구
@@ -425,6 +463,9 @@ function draw() {
 draw();
 
 
+/* -------------------------------------------------------------------------- */
+/*                                 Mouse Event                                */
+/* -------------------------------------------------------------------------- */
 canvas.addEventListener("mousedown", (e) => {
   isPressed = true;
   calculateMousePosition(e);
@@ -435,6 +476,9 @@ canvas.addEventListener("mouseup", () => (isPressed = false));
 canvas.addEventListener("mousemove", (e) => isPressed && calculateMousePosition(e));
 
 
+/* -------------------------------------------------------------------------- */
+/*                                Touch Event                                */
+/* -------------------------------------------------------------------------- */
 canvas.addEventListener("touchstart", (e) => {
   isPressed = true;
   calculateMousePosition(e.touches[0]);
@@ -449,6 +493,9 @@ canvas.addEventListener("touchmove", (e) => {
 });
 
 
+/* -------------------------------------------------------------------------- */
+/*                                Keydown Event                                */
+/* -------------------------------------------------------------------------- */
 window.addEventListener("keydown", ({ code }) => {
   if (!player.modelMesh) return;
 
@@ -490,6 +537,9 @@ window.addEventListener("keydown", ({ code }) => {
 });
 
 
+/* -------------------------------------------------------------------------- */
+/*                                 Resize Event                                */
+/* -------------------------------------------------------------------------- */
 function resize(){
   renderer.setSize(window.innerWidth, window.innerHeight);
 
