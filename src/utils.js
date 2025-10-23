@@ -1,5 +1,15 @@
 import gsap from "gsap";
 
+/**
+ * Player가 특정 영역에 진입/이탈할 때 모델 표시/숨김 처리
+ * @param {Object} params
+ * @param {THREE.Mesh} params.spotMesh - 감지 영역 메쉬
+ * @param {number} params.spotMeshHalfDistanceXZ - 감지 범위 (기본: 1.5)
+ * @param {Player} params.player - 플레이어 객체
+ * @param {Object} params.targetModel - 대상 모델 객체
+ * @param {THREE.Camera} params.camera - 카메라 객체
+ * @param {Object} params.animationConfig - 애니메이션 설정 (선택)
+ */
 export function setActive({
   spotMesh,
   spotMeshHalfDistanceXZ = 1.5,
