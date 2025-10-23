@@ -8,8 +8,8 @@ export class Player {
     this.meshes = meshes;
     this.gltfLoader = gltfLoader;
     this.modelSrc = modelSrc;
-    this.name = name;
     this.callback = callback;
+    this.name = name;
     this.hideMeshNames = hideMeshNames;
 
     this.init();
@@ -22,10 +22,11 @@ export class Player {
       if (child.isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
-        console.log("Child Name:", child.name);
+        // console.log("Child Name:", child.name);
         if (this.hideMeshNames && this.hideMeshNames.includes(child.name)) {
           child.visible = false;
         }
+        child.name = this.name;
       }
     });
 
@@ -33,9 +34,6 @@ export class Player {
     this.modelMesh.position.set(0, 0.3, 0);
 
     this.modelMesh.name = this.name;
-    if (this.hideMeshNames && this.hideMeshNames.includes(this.modelMesh.name)) {
-      this.modelMesh.visible = false;
-    }
 
     this.scene.add(this.modelMesh);
     this.meshes.push(this.modelMesh);

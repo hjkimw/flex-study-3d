@@ -10,10 +10,13 @@ export class Basic{
     scale,
     name,
     modelSrc,
+    callback,
+    visibile = false,
   }){
     this.scene = scene;
     this.gltfLoader = gltfLoader;
     this.meshes = meshes;
+    this.visibile = visibile;
 
     const {x: pX = 0, y: pY = 0, z: pZ = 0} = position;
     this.position = {x: pX, y: pY, z: pZ};    
@@ -24,6 +27,7 @@ export class Basic{
 
     this.name = name;
     this.modelSrc = modelSrc;
+    this.callback = callback;
 
     this.init();
   }
@@ -34,10 +38,15 @@ export class Basic{
     const glb = await this.gltfLoader.loadAsync(this.modelSrc);
 
     this.modelMesh = glb.scene.children[0];
-    this.modelMesh.traverse(child => child.isMesh && (child.castShadow = true));
+    this.modelMesh.traverse(child => {
+      if(child.isMesh){
+        child.castShadow = true;
+        child.name = this.name;
+      }
+    });
     
     this.modelMesh.position.set(this.position.x, this.position.y, this.position.z);
-    this.modelMesh.position.y = .3
+    // this.modelMesh.position.y = .3
 
     this.modelMesh.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
     
@@ -47,5 +56,9 @@ export class Basic{
     
     this.scene.add(this.modelMesh);
     this.meshes.push(this.modelMesh);
+
+    if(this.callback){
+      this.callback();
+    }
   }
 }
