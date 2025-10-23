@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { Player } from "./modeljs/Player.js";
 import { Basic } from "./modeljs/Basic.js";
 import { debounce } from "es-toolkit";
+import { setActive } from "./utils.js";
 
 const meshes = [];
 
@@ -379,76 +380,8 @@ function draw() {
         player.walking = false;
       }
 
-      // Player가 spotMesh 범위 영역에 진입했을 때
-      if(
-        Math.abs(spotMesh.position.x - player.modelMesh.position.x) < 1.5 &&
-        Math.abs(spotMesh.position.z - player.modelMesh.position.z) < 1.5
-      ){
-        
-        if(!roomOne.visibile){
-
-          console.log('나오셈');
-          
-          roomOne.visibile = true;
-          
-          spotMesh.material.color.set('seagreen');
-
-          // 모델이 위로 올라오고
-          const tl = gsap.timeline();
-          tl.to(roomOne.modelMesh.position, {
-            duration: 1, 
-            y: 0.3,
-            ease: 'Bounce.easeOut',
-          });
-          
-          // player 위치 조정하고
-          tl.to(player.modelMesh.position, {
-            duration: 1,
-            y: 1,
-            ease: 'Bounce.easeOut',
-          }, '<');
-
-          // 카메라의 위치 조정하고
-          gsap.to(camera.position, {
-            duration: 1, 
-            y: 3,
-          });
-        }		    
-
-
-      }else{ 
-        // Player가 spotMesh 범위 영역에 벗어났을 때
-
-        if(roomOne.visibile){ 
-        
-          console.log('들어가셈');
-          
-          roomOne.visibile = false;
-          
-          spotMesh.material.color.set('yellow');
-
-          const tl = gsap.timeline();
-
-          // 모델이 아래로 들어가고
-          tl.to(roomOne.modelMesh.position, {
-            duration: 0.5,
-            y: -5,
-          });
-
-          // player 위치 원상복구 하고
-          tl.to(player.modelMesh.position, {
-            duration: 1,
-            y: .3,
-            ease: 'Bounce.easeOut',
-          }, '<');
-          
-          // 카메라 위치 원상복구
-          gsap.to(camera.position, {
-            duration: 1,
-            y: 5,
-          });
-        } 
-      }
+      // roomOne 모델 활성화
+      setActive({ spotMesh, player, targetModel: roomOne, camera });
 
 
     } else {
