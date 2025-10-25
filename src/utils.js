@@ -12,7 +12,7 @@ import gsap from "gsap";
  */
 export function setActive({
   spotMesh,
-  spotMeshHalfDistanceXZ = 2.5,
+  spotMeshHalfDistanceXZ = 5,
   player,
   targetModel,
   camera,
@@ -23,7 +23,7 @@ export function setActive({
   const config = {
     targetModel: {
       activeY: 0.3,
-      hiddenY: -5,
+      hiddenY: -8,
       activeDuration: 1,
       hiddenDuration: 0.5,
     },

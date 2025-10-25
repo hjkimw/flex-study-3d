@@ -193,7 +193,7 @@ const player = new Player({
 const spotMeshes = [];
 
 const spotMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(5, 5),
+  new THREE.PlaneGeometry(10, 10),
   new THREE.MeshStandardMaterial({
     color: 'yellow',
     transparent: true,
@@ -216,16 +216,15 @@ scene.add(...spotMeshes);
 
 const roomInitalSetting = {
   position: {
-    y: -5,
-    z: 0,
+    y: -8,
   },
   rotation: {
     x: Math.PI / 2,
   },
   scale: {
-    x: 0.01,
-    y: 0.01,
-    z: 0.01,
+    x: 0.016,
+    y: 0.016,
+    z: 0.016,
   },
 };
 
@@ -240,7 +239,7 @@ const roomOne = new Room({
   position: {
     ...roomInitalSetting.position,
     x: -10,
-    z: 0,
+    z: -20,
   },
   rotation: {
     ...roomInitalSetting.rotation,
@@ -260,7 +259,8 @@ const roomTwo = new Room({
   name: "roomTwo",
   position: {
     ...roomInitalSetting.position,
-    z: -5,
+    x: 10,
+    z: -20,
   },
   rotation: {
     ...roomInitalSetting.rotation,
@@ -286,7 +286,8 @@ const roomThree = new Room({
   name: "roomThree",
   position: {
     ...roomInitalSetting.position,
-    x: 5,
+    x: 0,
+    z: 15,
   },
   rotation: {
     ...roomInitalSetting.rotation,
