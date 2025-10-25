@@ -198,7 +198,7 @@ const pointer = new THREE.Mesh(
   new THREE.MeshBasicMaterial({
     color: 'orange',
     transparent: true,
-    opacity: 0.35,
+    opacity: 0,
   })
 );
 pointer.rotation.x = -Math.PI / 2;
@@ -396,7 +396,7 @@ const roomFive = new Room({
 /*                                Intro Animation                             */
 /* -------------------------------------------------------------------------- */
 
-// 모든 모델 로딩 완료를 기다린 후 인트로 애니메이션 실행
+
 Promise.all([
   player.loadPromise,
   roomOne.loadPromise,
@@ -417,7 +417,7 @@ Promise.all([
   introTl.to(camera.position, {
     z: cameraPosition.z,
   })
-  
+
   introTl.to(camera.position, {
     x: cameraPosition.x,
     y: cameraPosition.y,
@@ -426,6 +426,17 @@ Promise.all([
     immediateRender: false,
     onUpdate() {
       camera.lookAt(0, 0, 0);
+    },
+  }, '<')
+
+  introTl.fromTo(player.modelMesh.position, {
+    y: -10,
+  }, {
+    y: 0.3,
+    duration: 1.8,
+    ease: 'power2.out',
+    onComplete() {
+      gsap.to(pointer.material, { opacity: .35 })
     },
   });
 
@@ -513,8 +524,6 @@ function draw() {
     ) {
       player.walking = false;
     }
-
-    !animationCameraLock && camera.lookAt(player.modelMesh.position);
 
     // 클릭/터치 이벤트 발생 시 레이캐스팅 동작 실행
     if (isPressed) {
