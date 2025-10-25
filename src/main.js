@@ -14,7 +14,7 @@ const roomStates = {
   roomFive: false,
 };
 
-
+let introLock = false;
 
 // 임시 데이터
 const modalData = {
@@ -405,7 +405,30 @@ Promise.all([
   roomFour.loadPromise,
   roomFive.loadPromise,
 ]).then(() => {
- 
+
+  const introTl = gsap.timeline({
+    delay: 1.5,
+    onComplete() {
+      introLock = true;
+      introAnimationLock = false;
+    },
+  });
+
+  introTl.to(camera.position, {
+    z: cameraPosition.z,
+  })
+  
+  introTl.to(camera.position, {
+    x: cameraPosition.x,
+    y: cameraPosition.y,
+    duration: 2.5,
+    ease: 'none',
+    immediateRender: false,
+    onUpdate() {
+      camera.lookAt(0, 0, 0);
+    },
+  });
+
 });
 
 /* -------------------------------------------------------------------------- */
