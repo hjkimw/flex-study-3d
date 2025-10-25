@@ -6,6 +6,70 @@ import { Room } from "./modeljs/Room.js";
 import { debounce } from "es-toolkit";
 import { setActive } from "./utils.js";
 
+
+
+const roomStates = {
+  roomOne: false,
+  roomTwo: false,
+  roomThree: false,
+  roomFour: false,
+  roomFive: false
+};
+
+// 임시 데이터
+const modalData = {
+  roomOne: {
+    title: "Room One",
+    image: "/assets/images/bg.jpg",
+    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+  },
+  roomTwo: {
+    title: "Room Two",
+    image: "/assets/images/bg.jpg",
+    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+  },
+  roomThree: {
+    title: "Room Three",
+    image: "/assets/images/bg.jpg",
+    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+  },
+  roomFour: {
+    title: "Room Four",
+    image: "/assets/images/bg.jpg",
+    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+  },
+  roomFive: {
+    title: "Room Five",
+    image: "/assets/images/bg.jpg",
+    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+  },
+};
+
+
+// 룸 상태 변화 감지 및 처리
+function checkRoomStates() {
+  const rooms = [
+    { spotMesh: spotMeshes[0], targetModel: roomOne, stateKey: 'roomOne' },
+    { spotMesh: spotMeshes[1], targetModel: roomTwo, stateKey: 'roomTwo' },
+    { spotMesh: spotMeshes[2], targetModel: roomThree, stateKey: 'roomThree' },
+    { spotMesh: spotMeshes[3], targetModel: roomFour, stateKey: 'roomFour' },
+    { spotMesh: spotMeshes[4], targetModel: roomFive, stateKey: 'roomFive' }
+  ];
+
+  rooms.forEach(({ spotMesh, targetModel, stateKey }) => {
+    const isInRange = 
+      Math.abs(spotMesh.position.x - player.modelMesh.position.x) < 5 &&
+      Math.abs(spotMesh.position.z - player.modelMesh.position.z) < 5;
+
+    // 상태가 변경된 경우에만 setActive 호출
+    if (isInRange !== roomStates[stateKey]) {
+      roomStates[stateKey] = isInRange;
+      setActive({ spotMesh, player, targetModel, camera });
+    }
+  });
+}
+
+
 const meshes = [];
 
 let animationCameraLock = false,
@@ -248,6 +312,7 @@ const roomOne = new Room({
     ...roomInitalSetting.scale,
   },
   spotMesh: spotMeshes[0],
+  modalData: modalData.roomOne,
 });
 
 
@@ -275,6 +340,7 @@ const roomTwo = new Room({
     this.modelMesh.add(directionalLight);
   },
   spotMesh: spotMeshes[1],
+  modalData: modalData.roomTwo,
 });
 
 
@@ -302,6 +368,7 @@ const roomThree = new Room({
     this.modelMesh.add(directionalLight);
   },
   spotMesh: spotMeshes[2],
+  modalData: modalData.roomThree,
 });
 
 
@@ -327,6 +394,7 @@ const roomFour = new Room({
 
   },
   spotMesh: spotMeshes[3],
+  modalData: modalData.roomFour,
 });
 
 
@@ -352,6 +420,7 @@ const roomFive = new Room({
 
   },
   spotMesh: spotMeshes[4],
+  modalData: modalData.roomFive,
 });
 
 
@@ -466,21 +535,10 @@ function draw() {
       ) {
         player.walking = false;
       }
+    
 
-      // roomOne 모델 활성화
-      setActive({ spotMesh: spotMeshes[0], player, targetModel: roomOne, camera });
-
-      // roomTwe 모델 활성화
-      setActive({ spotMesh: spotMeshes[1], player, targetModel: roomTwo, camera });
-
-      // roomThree 모델 활성화
-      setActive({ spotMesh: spotMeshes[2], player, targetModel: roomThree, camera });
-      
-      // roomFour 모델 활성화
-      setActive({ spotMesh: spotMeshes[3], player, targetModel: roomFour, camera });
-
-      // roomFive 모델 활성화
-      setActive({ spotMesh: spotMeshes[4], player, targetModel: roomFive, camera });
+    // 룸 상태 변화 감지 (상태가 변경될 때만 setActive 호출)
+    checkRoomStates();
 
 
 
@@ -587,3 +645,13 @@ function resize(){
 }
 
 window.addEventListener("resize", debounce(resize, 100));
+
+
+const modalOverlay = document.querySelector(".modal-overlay");
+
+window.addEventListener("click", ({target}) => {
+  
+  if(target.classList.contains("modal-close")){
+    modalOverlay.classList.remove("active");
+  }
+});

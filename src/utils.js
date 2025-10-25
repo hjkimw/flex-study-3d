@@ -51,6 +51,9 @@ export function setActive({
 
 
     // console.log(targetModel);
+
+    console.log(targetModel);
+    
     
 
   // Player가 spotMesh 범위 영역에 진입했을 때
@@ -79,6 +82,11 @@ export function setActive({
         },
         '<'
       );
+
+      targetModel.openModal();
+
+console.log('openModal');
+
 
       // 카메라의 위치 조정
       // tl.to(
