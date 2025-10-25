@@ -1,6 +1,5 @@
-import { Vector3, Euler } from 'three';
 
-export class Basic{
+export class Room{
   constructor({
     scene,
     gltfLoader,
@@ -12,11 +11,13 @@ export class Basic{
     modelSrc,
     callback,
     visibile = false,
+    spotMesh,
   }){
     this.scene = scene;
     this.gltfLoader = gltfLoader;
     this.meshes = meshes;
     this.visibile = visibile;
+    this.spotMesh = spotMesh;
 
     const {x: pX = 0, y: pY = 0, z: pZ = 0} = position;
     this.position = {x: pX, y: pY, z: pZ};    
@@ -59,6 +60,11 @@ export class Basic{
 
     if(this.callback){
       this.callback();
+    }
+
+    if(this.spotMesh){
+      this.spotMesh.position.x = this.position.x;
+      this.spotMesh.position.z = this.position.z;
     }
   }
 }

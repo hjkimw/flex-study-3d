@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import gsap from "gsap";
 import { Player } from "./modeljs/Player.js";
-import { Basic } from "./modeljs/Basic.js";
+import { Room } from "./modeljs/Room.js";
 import { debounce } from "es-toolkit";
 import { setActive } from "./utils.js";
 
@@ -238,10 +238,8 @@ const roomInitalSetting = {
 };
 
 
-
-
 // room one
-const roomOne = new Basic({
+const roomOne = new Room({
   scene,
   gltfLoader,
   meshes,
@@ -258,14 +256,11 @@ const roomOne = new Basic({
   scale: {
     ...roomInitalSetting.scale,
   },
-  callback(){
-    roomOneSpotMesh.position.x = roomOne.position.x;
-    roomOneSpotMesh.position.z = roomOne.position.z;
-  }
+  spotMesh: roomOneSpotMesh,
 });
 
 
-const roomTwo = new Basic({
+const roomTwo = new Room({
   scene,
   gltfLoader,
   meshes,
@@ -286,14 +281,12 @@ const roomTwo = new Basic({
     const directionalLight = new THREE.DirectionalLight("white", 5);
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
-
-    roomTwoSpotMesh.position.x = roomTwo.position.x;
-    roomTwoSpotMesh.position.z = roomTwo.position.z;
-  }
+  },
+  spotMesh: roomTwoSpotMesh,
 });
 
 
-const roomTwenty = new Basic({
+const roomTwenty = new Room({
   scene,
   gltfLoader,
   meshes,
@@ -314,10 +307,8 @@ const roomTwenty = new Basic({
     const directionalLight = new THREE.DirectionalLight("white", 5);
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
-
-    roomTwentySpotMesh.position.x = roomTwenty.position.x;
-    roomTwentySpotMesh.position.z = roomTwenty.position.z;
-  }
+  },
+  spotMesh: roomTwentySpotMesh,
 });
 
 
