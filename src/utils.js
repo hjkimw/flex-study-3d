@@ -50,7 +50,7 @@ export function setActive({
     Math.abs(spotMesh.position.z - player.modelMesh.position.z) < spotMeshHalfDistanceXZ;
 
 
-    console.log(targetModel);
+    // console.log(targetModel);
     
 
   // Player가 spotMesh 범위 영역에 진입했을 때

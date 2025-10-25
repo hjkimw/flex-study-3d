@@ -206,17 +206,9 @@ spotMesh.position.y = 0.005;
 spotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
 spotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
 
+for(let i=0; i<5; i++) spotMeshes.push(spotMesh.clone());
 
-const roomOneSpotMesh = spotMesh.clone();
-scene.add(roomOneSpotMesh);
-
-const roomTwoSpotMesh = spotMesh.clone();
-scene.add(roomTwoSpotMesh);
-
-const roomTwentySpotMesh = spotMesh.clone();
-scene.add(roomTwentySpotMesh);
-
-
+scene.add(...spotMeshes);
 
 /* -------------------------------------------------------------------------- */
 /*                                Mesh Objects                                */
@@ -256,7 +248,7 @@ const roomOne = new Room({
   scale: {
     ...roomInitalSetting.scale,
   },
-  spotMesh: roomOneSpotMesh,
+  spotMesh: spotMeshes[0],
 });
 
 
@@ -282,16 +274,16 @@ const roomTwo = new Room({
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
   },
-  spotMesh: roomTwoSpotMesh,
+  spotMesh: spotMeshes[1],
 });
 
 
-const roomTwenty = new Room({
+const roomThree = new Room({
   scene,
   gltfLoader,
   meshes,
   modelSrc: "/assets/models/Room_20.glb",
-  name: "roomTwenty",
+  name: "roomThree",
   position: {
     ...roomInitalSetting.position,
     x: 5,
@@ -308,9 +300,63 @@ const roomTwenty = new Room({
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
   },
-  spotMesh: roomTwentySpotMesh,
+  spotMesh: spotMeshes[2],
 });
 
+
+const roomFour = new Room({
+  scene,
+  gltfLoader,
+  meshes,
+  modelSrc: "/assets/models/Room_20.glb",
+  name: "roomFour",
+  position: {
+    ...roomInitalSetting.position,
+    x: 15,
+    z: -5
+  },
+  rotation: {
+    ...roomInitalSetting.rotation,
+    z: Math.PI / 2,
+  },
+  scale: {
+    ...roomInitalSetting.scale,
+  },
+  callback(){
+
+  },
+  spotMesh: spotMeshes[3],
+});
+
+
+const roomFive = new Room({
+  scene,
+  gltfLoader,
+  meshes,
+  modelSrc: "/assets/models/Room_20.glb",
+  name: "roomFive",
+  position: {
+    ...roomInitalSetting.position,
+    x: -15,
+    z: -5
+  },
+  rotation: {
+    ...roomInitalSetting.rotation,
+    z: Math.PI / 2,
+  },
+  scale: {
+    ...roomInitalSetting.scale,
+  },
+  callback(){
+
+  },
+  spotMesh: spotMeshes[4],
+});
+
+
+/* -------------------------------------------------------------------------- */
+/*                          Raycasting Setting                                */
+/* -------------------------------------------------------------------------- */
 
 function checkIntersects() {
   const intersects = raycaster.intersectObjects(meshes);
@@ -421,13 +467,21 @@ function draw() {
       }
 
       // roomOne 모델 활성화
-      setActive({ spotMesh: roomOneSpotMesh, player, targetModel: roomOne, camera });
+      setActive({ spotMesh: spotMeshes[0], player, targetModel: roomOne, camera });
 
-      // roomTwenty 모델 활성화
-      setActive({ spotMesh: roomTwentySpotMesh, player, targetModel: roomTwenty, camera });
+      // roomTwe 모델 활성화
+      setActive({ spotMesh: spotMeshes[1], player, targetModel: roomTwo, camera });
 
-      // roomTwo 모델 활성화
-      setActive({ spotMesh: roomTwoSpotMesh, player, targetModel: roomTwo, camera });
+      // roomThree 모델 활성화
+      setActive({ spotMesh: spotMeshes[2], player, targetModel: roomThree, camera });
+      
+      // roomFour 모델 활성화
+      setActive({ spotMesh: spotMeshes[3], player, targetModel: roomFour, camera });
+
+      // roomFive 모델 활성화
+      setActive({ spotMesh: spotMeshes[4], player, targetModel: roomFive, camera });
+
+
 
 
     } else {
