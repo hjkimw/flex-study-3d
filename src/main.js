@@ -266,7 +266,7 @@ const roomOne = new Basic({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: "/assets/models/Room_4.glb",
+  modelSrc: "/assets/models/Room_7.glb",
   name: "room",
   position: {
     ...roomInitalSetting.position,

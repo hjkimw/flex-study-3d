@@ -81,14 +81,14 @@ export function setActive({
       );
 
       // 카메라의 위치 조정
-      tl.to(
-        camera.position,
-        {
-          duration: config.camera.duration,
-          y: config.camera.activeY,
-        },
-        '<'
-      );
+      // tl.to(
+      //   camera.position,
+      //   {
+      //     duration: config.camera.duration,
+      //     y: config.camera.activeY,
+      //   },
+      //   '<'
+      // );
     }
   } else {
     
@@ -117,14 +117,14 @@ export function setActive({
       );
 
       // 카메라 위치 원상복구
-      tl.to(
-        camera.position,
-        {
-          duration: config.camera.duration,
-          y: config.camera.normalY,
-        },
-        '<'
-      );
+      // tl.to(
+      //   camera.position,
+      //   {
+      //     duration: config.camera.duration,
+      //     y: config.camera.normalY,
+      //   },
+      //   '<'
+      // );
     }
   }
 }
