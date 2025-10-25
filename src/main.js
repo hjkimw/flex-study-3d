@@ -14,6 +14,8 @@ const roomStates = {
   roomFive: false,
 };
 
+
+
 // 임시 데이터
 const modalData = {
   roomOne: {
@@ -119,28 +121,11 @@ const camera = new THREE.OrthographicCamera(
   1000
 );
 
-const introCameraPosition = new THREE.Vector3(0, 1, 0);
+const introCameraPosition = new THREE.Vector3(0, 20, 0);
 const cameraPosition = new THREE.Vector3(1, 5, 5);
 camera.position.set(introCameraPosition.x, introCameraPosition.y, introCameraPosition.z);
 
-// intro
-// gsap.fromTo(camera.position, {
-//   x: introCameraPosition.x,
-//   y: introCameraPosition.y,
-//   z: introCameraPosition.z,
-// }, {
-//   x: cameraPosition.x,
-//   y: cameraPosition.y,
-//   z: cameraPosition.z,
-//   onComplete() {
-//   },
-//   duration: 2,
-//   delay: 1,
-//   ease: 'power2.inOut'
-// });
-
 camera.zoom = 0.1;
-camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 camera.lookAt(0, 0, 0);
 camera.updateProjectionMatrix();
 scene.add(camera);
@@ -408,10 +393,29 @@ const roomFive = new Room({
 });
 
 /* -------------------------------------------------------------------------- */
+/*                                Intro Animation                             */
+/* -------------------------------------------------------------------------- */
+
+// 모든 모델 로딩 완료를 기다린 후 인트로 애니메이션 실행
+Promise.all([
+  player.loadPromise,
+  roomOne.loadPromise,
+  roomTwo.loadPromise,
+  roomThree.loadPromise,
+  roomFour.loadPromise,
+  roomFive.loadPromise,
+]).then(() => {
+ 
+});
+
+/* -------------------------------------------------------------------------- */
 /*                          Raycasting Setting                                */
 /* -------------------------------------------------------------------------- */
 
 function checkIntersects() {
+
+  if (!introLock) return;
+
   const intersects = raycaster.intersectObjects(meshes);
 
   for (const item of intersects) {
@@ -463,6 +467,8 @@ const clock = new THREE.Clock();
 /*                                Draw Loop                                   */
 /* -------------------------------------------------------------------------- */
 function draw() {
+
+
   const delta = clock.getDelta();
 
   // 카메라 업데이트
