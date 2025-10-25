@@ -164,7 +164,7 @@ scene.add(pointer);
 
 
 /* -------------------------------------------------------------------------- */
-/*                                Mesh Objects                                */
+/*                                Player Setting                              */
 /* -------------------------------------------------------------------------- */
 let initY = null;
 
@@ -192,7 +192,7 @@ const player = new Player({
 /* -------------------------------------------------------------------------- */
 const spotMeshes = [];
 
-const spotMesh = new THREE.Mesh(
+const roomOneSpotMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(3, 3),
   new THREE.MeshStandardMaterial({
     color: 'yellow',
@@ -201,27 +201,50 @@ const spotMesh = new THREE.Mesh(
   })
 );
 
+// spotMesh.position.set(-5, 0.005, -5);
+roomOneSpotMesh.position.y = 0.005;
+roomOneSpotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
+roomOneSpotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
+scene.add(roomOneSpotMesh);
+
+const roomTwoSpotMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(3, 3),
+  new THREE.MeshStandardMaterial({
+    color: 'yellow',
+    transparent: true,
+    opacity: 0.5,
+  })
+);
 
 // spotMesh.position.set(-5, 0.005, -5);
-spotMesh.position.y = 0.005;
-spotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
-spotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
-scene.add(spotMesh);
+roomTwoSpotMesh.position.y = 0.005;
+roomTwoSpotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
+roomTwoSpotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
+scene.add(roomTwoSpotMesh);
+
+const roomTwentySpotMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(3, 3),
+  new THREE.MeshStandardMaterial({
+    color: 'yellow',
+    transparent: true,
+    opacity: 0.5,
+  })
+);
+
+// spotMesh.position.set(-5, 0.005, -5);
+roomTwentySpotMesh.position.y = 0.005;
+roomTwentySpotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
+roomTwentySpotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
+scene.add(roomTwentySpotMesh);
+
 
 
 /* -------------------------------------------------------------------------- */
 /*                                Mesh Objects                                */
 /* -------------------------------------------------------------------------- */
 
-// room one
-const roomOne = new Basic({
-  scene,
-  gltfLoader,
-  meshes,
-  modelSrc: "/assets/models/Room_4__.glb",
-  name: "room",
+const roomInitalSetting = {
   position: {
-    x: -10,
     y: -5,
     z: 0,
   },
@@ -233,12 +256,32 @@ const roomOne = new Basic({
     y: 0.01,
     z: 0.01,
   },
+};
+
+
+
+
+// room one
+const roomOne = new Basic({
+  scene,
+  gltfLoader,
+  meshes,
+  modelSrc: "/assets/models/Room_4.glb",
+  name: "room",
+  position: {
+    ...roomInitalSetting.position,
+    x: -10,
+    z: 0,
+  },
+  rotation: {
+    ...roomInitalSetting.rotation,
+  },
+  scale: {
+    ...roomInitalSetting.scale,
+  },
   callback(){
-
-    spotMesh.position.x = roomOne.position.x;
-    spotMesh.position.z = roomOne.position.z;
-
-    // console.log(spotMesh.position, roomOne.position);
+    roomOneSpotMesh.position.x = roomOne.position.x;
+    roomOneSpotMesh.position.z = roomOne.position.z;
   }
 });
 
@@ -250,24 +293,51 @@ const roomTwo = new Basic({
   modelSrc: "/assets/models/Room_7.glb",
   name: "roomTwo",
   position: {
-    x: 10,
-    y: 0,
+    ...roomInitalSetting.position,
     z: -5,
   },
   rotation: {
-    x: Math.PI / 2,
-    y: 0,
+    ...roomInitalSetting.rotation,
     z: Math.PI / 2,
   },
   scale: {
-    x: 0.01,
-    y: 0.01,
-    z: 0.01,
+    ...roomInitalSetting.scale,
   },
   callback(){
     const directionalLight = new THREE.DirectionalLight("white", 5);
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
+
+    roomTwoSpotMesh.position.x = roomTwo.position.x;
+    roomTwoSpotMesh.position.z = roomTwo.position.z;
+  }
+});
+
+
+const roomTwenty = new Basic({
+  scene,
+  gltfLoader,
+  meshes,
+  modelSrc: "/assets/models/Room_20.glb",
+  name: "roomTwenty",
+  position: {
+    ...roomInitalSetting.position,
+    x: 5,
+  },
+  rotation: {
+    ...roomInitalSetting.rotation,
+    z: Math.PI / 2,
+  },
+  scale: {
+    ...roomInitalSetting.scale,
+  },
+  callback(){
+    const directionalLight = new THREE.DirectionalLight("white", 5);
+    directionalLight.castShadow = true;
+    this.modelMesh.add(directionalLight);
+
+    roomTwentySpotMesh.position.x = roomTwenty.position.x;
+    roomTwentySpotMesh.position.z = roomTwenty.position.z;
   }
 });
 
@@ -381,7 +451,13 @@ function draw() {
       }
 
       // roomOne 모델 활성화
-      setActive({ spotMesh, player, targetModel: roomOne, camera });
+      setActive({ spotMesh: roomOneSpotMesh, player, targetModel: roomOne, camera });
+
+      // roomTwenty 모델 활성화
+      setActive({ spotMesh: roomTwentySpotMesh, player, targetModel: roomTwenty, camera });
+
+      // roomTwo 모델 활성화
+      setActive({ spotMesh: roomTwoSpotMesh, player, targetModel: roomTwo, camera });
 
 
     } else {
