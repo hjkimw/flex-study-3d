@@ -192,8 +192,8 @@ const player = new Player({
 /* -------------------------------------------------------------------------- */
 const spotMeshes = [];
 
-const roomOneSpotMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(3, 3),
+const spotMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(5, 5),
   new THREE.MeshStandardMaterial({
     color: 'yellow',
     transparent: true,
@@ -202,39 +202,18 @@ const roomOneSpotMesh = new THREE.Mesh(
 );
 
 // spotMesh.position.set(-5, 0.005, -5);
-roomOneSpotMesh.position.y = 0.005;
-roomOneSpotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
-roomOneSpotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
+spotMesh.position.y = 0.005;
+spotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
+spotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
+
+
+const roomOneSpotMesh = spotMesh.clone();
 scene.add(roomOneSpotMesh);
 
-const roomTwoSpotMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(3, 3),
-  new THREE.MeshStandardMaterial({
-    color: 'yellow',
-    transparent: true,
-    opacity: 0.5,
-  })
-);
-
-// spotMesh.position.set(-5, 0.005, -5);
-roomTwoSpotMesh.position.y = 0.005;
-roomTwoSpotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
-roomTwoSpotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
+const roomTwoSpotMesh = spotMesh.clone();
 scene.add(roomTwoSpotMesh);
 
-const roomTwentySpotMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(3, 3),
-  new THREE.MeshStandardMaterial({
-    color: 'yellow',
-    transparent: true,
-    opacity: 0.5,
-  })
-);
-
-// spotMesh.position.set(-5, 0.005, -5);
-roomTwentySpotMesh.position.y = 0.005;
-roomTwentySpotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
-roomTwentySpotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
+const roomTwentySpotMesh = spotMesh.clone();
 scene.add(roomTwentySpotMesh);
 
 

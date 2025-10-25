@@ -12,7 +12,7 @@ import gsap from "gsap";
  */
 export function setActive({
   spotMesh,
-  spotMeshHalfDistanceXZ = 1.5,
+  spotMeshHalfDistanceXZ = 2.5,
   player,
   targetModel,
   camera,
