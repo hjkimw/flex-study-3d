@@ -1,50 +1,52 @@
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import gsap from "gsap";
-import { Player } from "./modeljs/Player.js";
-import { Room } from "./modeljs/Room.js";
-import { debounce } from "es-toolkit";
-import { setActive } from "./utils.js";
-
-
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import gsap from 'gsap';
+import { Player } from './modeljs/Player.js';
+import { Room } from './modeljs/Room.js';
+import { debounce } from 'es-toolkit';
+import { setActive } from './utils.js';
 
 const roomStates = {
   roomOne: false,
   roomTwo: false,
   roomThree: false,
   roomFour: false,
-  roomFive: false
+  roomFive: false,
 };
 
 // 임시 데이터
 const modalData = {
   roomOne: {
-    title: "Room One",
-    image: "/assets/images/bg.jpg",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+    title: 'Room One',
+    image: '/assets/images/bg.jpg',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
   roomTwo: {
-    title: "Room Two",
-    image: "/assets/images/bg.jpg",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+    title: 'Room Two',
+    image: '/assets/images/bg.jpg',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
   roomThree: {
-    title: "Room Three",
-    image: "/assets/images/bg.jpg",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+    title: 'Room Three',
+    image: '/assets/images/bg.jpg',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
   roomFour: {
-    title: "Room Four",
-    image: "/assets/images/bg.jpg",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+    title: 'Room Four',
+    image: '/assets/images/bg.jpg',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
   roomFive: {
-    title: "Room Five",
-    image: "/assets/images/bg.jpg",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.",
+    title: 'Room Five',
+    image: '/assets/images/bg.jpg',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
 };
-
 
 // 룸 상태 변화 감지 및 처리
 function checkRoomStates() {
@@ -53,11 +55,11 @@ function checkRoomStates() {
     { spotMesh: spotMeshes[1], targetModel: roomTwo, stateKey: 'roomTwo' },
     { spotMesh: spotMeshes[2], targetModel: roomThree, stateKey: 'roomThree' },
     { spotMesh: spotMeshes[3], targetModel: roomFour, stateKey: 'roomFour' },
-    { spotMesh: spotMeshes[4], targetModel: roomFive, stateKey: 'roomFive' }
+    { spotMesh: spotMeshes[4], targetModel: roomFive, stateKey: 'roomFive' },
   ];
 
   rooms.forEach(({ spotMesh, targetModel, stateKey }) => {
-    const isInRange = 
+    const isInRange =
       Math.abs(spotMesh.position.x - player.modelMesh.position.x) < 5 &&
       Math.abs(spotMesh.position.z - player.modelMesh.position.z) < 5;
 
@@ -68,7 +70,6 @@ function checkRoomStates() {
     }
   });
 }
-
 
 const meshes = [];
 
@@ -81,17 +82,16 @@ let animationCameraLock = false,
 /*                                Texture Setting                             */
 /* -------------------------------------------------------------------------- */
 const textureLoader = new THREE.TextureLoader();
-const floorTexture = textureLoader.load("/assets/images/bg.jpg");
+const floorTexture = textureLoader.load('/assets/images/bg.jpg');
 floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.x = 10;
 floorTexture.repeat.y = 10;
 
-
 /* -------------------------------------------------------------------------- */
 /*                                Renderer Setting                            */
 /* -------------------------------------------------------------------------- */
-const canvas = document.querySelector("#three-canvas");
+const canvas = document.querySelector('#three-canvas');
 const renderer = new THREE.WebGLRenderer({
   canvas,
   antialias: true,
@@ -106,7 +106,6 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 /*                                Scene Setting                               */
 /* -------------------------------------------------------------------------- */
 const scene = new THREE.Scene();
-
 
 /* -------------------------------------------------------------------------- */
 /*                                Camera Setting                              */
@@ -146,7 +145,6 @@ camera.lookAt(0, 0, 0);
 camera.updateProjectionMatrix();
 scene.add(camera);
 
-
 /* -------------------------------------------------------------------------- */
 /*                                Raycaster Setting                           */
 /* -------------------------------------------------------------------------- */
@@ -161,14 +159,13 @@ function calculateMousePosition(e) {
   mouse.y = -((e.clientY / canvas.clientHeight) * 2 - 1);
 }
 
-
 /* -------------------------------------------------------------------------- */
 /*                                Light Setting                               */
 /* -------------------------------------------------------------------------- */
-const ambientLight = new THREE.AmbientLight("white", 1);
+const ambientLight = new THREE.AmbientLight('white', 1);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight("white", 0.2);
+const directionalLight = new THREE.DirectionalLight('white', 0.2);
 const directionalLightOriginPosition = new THREE.Vector3(1, 1, 1);
 
 directionalLight.position.x = directionalLightOriginPosition.x;
@@ -190,7 +187,6 @@ directionalLight.shadow.camera.far = 100;
 
 scene.add(directionalLight);
 
-
 /* -------------------------------------------------------------------------- */
 /*                                Footer Objects                               */
 /* -------------------------------------------------------------------------- */
@@ -200,7 +196,7 @@ const floorMesh = new THREE.Mesh(
     map: floorTexture,
   })
 );
-floorMesh.name = "floor";
+floorMesh.name = 'floor';
 floorMesh.rotation.x = -Math.PI / 2;
 floorMesh.receiveShadow = true;
 scene.add(floorMesh);
@@ -209,14 +205,13 @@ meshes.push(floorMesh);
 // Loader
 const gltfLoader = new GLTFLoader();
 
-
 /* -------------------------------------------------------------------------- */
 /*                                Pointer Objects                               */
 /* -------------------------------------------------------------------------- */
 const pointer = new THREE.Mesh(
   new THREE.PlaneGeometry(2, 2),
   new THREE.MeshBasicMaterial({
-    color: "orange",
+    color: 'orange',
     transparent: true,
     opacity: 0.35,
   })
@@ -225,7 +220,6 @@ pointer.rotation.x = -Math.PI / 2;
 pointer.position.y = 0.01;
 pointer.receiveShadow = true;
 scene.add(pointer);
-
 
 /* -------------------------------------------------------------------------- */
 /*                                Player Setting                              */
@@ -237,11 +231,11 @@ const player = new Player({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: "/assets/models/robot.animated.glb",
-  hideMeshNames: ["?", "smile", "cry", "angry", "curve", "default_1", "default_2", "sweating"],
-  name: "player",
+  modelSrc: '/assets/models/robot.animated.glb',
+  hideMeshNames: ['?', 'smile', 'cry', 'angry', 'curve', 'default_1', 'default_2', 'sweating'],
+  name: 'player',
   callback() {
-    const directionalLight = new THREE.DirectionalLight("white", .4);
+    const directionalLight = new THREE.DirectionalLight('white', 0.4);
 
     directionalLight.castShadow = true;
 
@@ -249,7 +243,6 @@ const player = new Player({
     initY = this.modelMesh.position.y;
   },
 });
-
 
 /* -------------------------------------------------------------------------- */
 /*                                Spot Mesh Setting                           */
@@ -267,10 +260,10 @@ const spotMesh = new THREE.Mesh(
 
 // spotMesh.position.set(-5, 0.005, -5);
 spotMesh.position.y = 0.005;
-spotMesh.rotation.x = -Math.PI/2; // 수평으로 회전
-spotMesh.receiveShadow = true;  // 그림자가 표현될 수 있게 설정
+spotMesh.rotation.x = -Math.PI / 2; // 수평으로 회전
+spotMesh.receiveShadow = true; // 그림자가 표현될 수 있게 설정
 
-for(let i=0; i<5; i++) spotMeshes.push(spotMesh.clone());
+for (let i = 0; i < 5; i++) spotMeshes.push(spotMesh.clone());
 
 scene.add(...spotMeshes);
 
@@ -292,14 +285,13 @@ const roomInitalSetting = {
   },
 };
 
-
 // room one
 const roomOne = new Room({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: "/assets/models/Room_7.glb",
-  name: "room",
+  modelSrc: '/assets/models/Room_7.glb',
+  name: 'room',
   position: {
     ...roomInitalSetting.position,
     x: -10,
@@ -315,13 +307,12 @@ const roomOne = new Room({
   modalData: modalData.roomOne,
 });
 
-
 const roomTwo = new Room({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: "/assets/models/Room_7.glb",
-  name: "roomTwo",
+  modelSrc: '/assets/models/Room_7.glb',
+  name: 'roomTwo',
   position: {
     ...roomInitalSetting.position,
     x: 10,
@@ -334,8 +325,8 @@ const roomTwo = new Room({
   scale: {
     ...roomInitalSetting.scale,
   },
-  callback(){
-    const directionalLight = new THREE.DirectionalLight("white", 5);
+  callback() {
+    const directionalLight = new THREE.DirectionalLight('white', 5);
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
   },
@@ -343,13 +334,12 @@ const roomTwo = new Room({
   modalData: modalData.roomTwo,
 });
 
-
 const roomThree = new Room({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: "/assets/models/Room_20.glb",
-  name: "roomThree",
+  modelSrc: '/assets/models/Room_20.glb',
+  name: 'roomThree',
   position: {
     ...roomInitalSetting.position,
     x: 0,
@@ -362,8 +352,8 @@ const roomThree = new Room({
   scale: {
     ...roomInitalSetting.scale,
   },
-  callback(){
-    const directionalLight = new THREE.DirectionalLight("white", 5);
+  callback() {
+    const directionalLight = new THREE.DirectionalLight('white', 5);
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
   },
@@ -371,17 +361,16 @@ const roomThree = new Room({
   modalData: modalData.roomThree,
 });
 
-
 const roomFour = new Room({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: "/assets/models/Room_20.glb",
-  name: "roomFour",
+  modelSrc: '/assets/models/Room_20.glb',
+  name: 'roomFour',
   position: {
     ...roomInitalSetting.position,
     x: 15,
-    z: -5
+    z: -5,
   },
   rotation: {
     ...roomInitalSetting.rotation,
@@ -390,24 +379,21 @@ const roomFour = new Room({
   scale: {
     ...roomInitalSetting.scale,
   },
-  callback(){
-
-  },
+  callback() {},
   spotMesh: spotMeshes[3],
   modalData: modalData.roomFour,
 });
-
 
 const roomFive = new Room({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: "/assets/models/Room_20.glb",
-  name: "roomFive",
+  modelSrc: '/assets/models/Room_20.glb',
+  name: 'roomFive',
   position: {
     ...roomInitalSetting.position,
     x: -15,
-    z: -5
+    z: -5,
   },
   rotation: {
     ...roomInitalSetting.rotation,
@@ -416,13 +402,10 @@ const roomFive = new Room({
   scale: {
     ...roomInitalSetting.scale,
   },
-  callback(){
-
-  },
+  callback() {},
   spotMesh: spotMeshes[4],
   modalData: modalData.roomFive,
 });
-
 
 /* -------------------------------------------------------------------------- */
 /*                          Raycasting Setting                                */
@@ -432,22 +415,21 @@ function checkIntersects() {
   const intersects = raycaster.intersectObjects(meshes);
 
   for (const item of intersects) {
-
-    if(item.object.name === "room"){     
+    if (item.object.name === 'room') {
       console.log('room');
       break;
     }
 
-    if(item.object.name === "player"){     
-      console.log('player');      
+    if (item.object.name === 'player') {
+      console.log('player');
       break;
     }
 
-    if (item.object.name === "floor") {
+    if (item.object.name === 'floor') {
       const newDestination = {
         x: item.point.x,
         z: item.point.z,
-        y: 0.3
+        y: 0.3,
       };
 
       // 점프 중에는 목적지만 저장하고 즉시 회전/이동 X
@@ -495,7 +477,6 @@ function draw() {
 
   // Player 애니메이션 동작
   if (player.modelMesh) {
-
     // 목적지에 도달했을 때 걷기 애니메이션 정지
     if (
       player.modelMesh.position.x.toFixed(1) === destinationPoint.x.toFixed(1) &&
@@ -513,7 +494,6 @@ function draw() {
 
     // Player 걷고 있을 때
     if (player.walking) {
-
       angle = Math.atan2(
         destinationPoint.z - player.modelMesh.position.z,
         destinationPoint.x - player.modelMesh.position.x
@@ -535,14 +515,9 @@ function draw() {
       ) {
         player.walking = false;
       }
-    
 
-    // 룸 상태 변화 감지 (상태가 변경될 때만 setActive 호출)
-    checkRoomStates();
-
-
-
-
+      // Room 상태 변화 감지
+      checkRoomStates();
     } else {
       player.walkingAction.stop();
       player.defaultAction.play();
@@ -554,45 +529,42 @@ function draw() {
 }
 draw();
 
-
 /* -------------------------------------------------------------------------- */
 /*                                 Mouse Event                                */
 /* -------------------------------------------------------------------------- */
-canvas.addEventListener("mousedown", (e) => {
+canvas.addEventListener('mousedown', (e) => {
   isPressed = true;
   calculateMousePosition(e);
 });
 
-canvas.addEventListener("mouseup", () => (isPressed = false));
+canvas.addEventListener('mouseup', () => (isPressed = false));
 
-canvas.addEventListener("mousemove", (e) => isPressed && calculateMousePosition(e));
-
+canvas.addEventListener('mousemove', (e) => isPressed && calculateMousePosition(e));
 
 /* -------------------------------------------------------------------------- */
 /*                                Touch Event                                */
 /* -------------------------------------------------------------------------- */
-canvas.addEventListener("touchstart", (e) => {
+canvas.addEventListener('touchstart', (e) => {
   isPressed = true;
   calculateMousePosition(e.touches[0]);
 });
 
-canvas.addEventListener("touchend", () => (isPressed = false));
+canvas.addEventListener('touchend', () => (isPressed = false));
 
-canvas.addEventListener("touchmove", (e) => {
+canvas.addEventListener('touchmove', (e) => {
   if (isPressed) {
     calculateMousePosition(e.touches[0]);
   }
 });
 
-
 /* -------------------------------------------------------------------------- */
 /*                                Keydown Event                                */
 /* -------------------------------------------------------------------------- */
-window.addEventListener("keydown", ({ code }) => {
+window.addEventListener('keydown', ({ code }) => {
   if (!player.modelMesh) return;
 
   switch (code.toUpperCase()) {
-    case "SPACE":
+    case 'SPACE':
       if (!isKeydown) {
         animationCameraLock = true;
         isKeydown = true;
@@ -602,7 +574,7 @@ window.addEventListener("keydown", ({ code }) => {
         player.defaultAction.stop();
         player.jumpAction.play();
 
-        const tl = gsap.timeline({ defaults: { duration: 0.5, ease: "none" } });
+        const tl = gsap.timeline({ defaults: { duration: 0.5, ease: 'none' } });
         tl.to(player.modelMesh.position, { y: 4 });
         tl.to(player.modelMesh.position, { y: initY });
 
@@ -618,7 +590,7 @@ window.addEventListener("keydown", ({ code }) => {
             destinationPoint.y = pendingDestination.y;
 
             player.modelMesh.lookAt(destinationPoint);
-            
+
             player.walking = true;
             pendingDestination = null;
           }
@@ -628,11 +600,10 @@ window.addEventListener("keydown", ({ code }) => {
   }
 });
 
-
 /* -------------------------------------------------------------------------- */
 /*                                 Resize Event                                */
 /* -------------------------------------------------------------------------- */
-function resize(){
+function resize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const aspect = window.innerWidth / window.innerHeight;
@@ -644,14 +615,12 @@ function resize(){
   camera.updateProjectionMatrix();
 }
 
-window.addEventListener("resize", debounce(resize, 100));
+window.addEventListener('resize', debounce(resize, 100));
 
+const modalOverlay = document.querySelector('.modal-overlay');
 
-const modalOverlay = document.querySelector(".modal-overlay");
-
-window.addEventListener("click", ({target}) => {
-  
-  if(target.classList.contains("modal-close")){
-    modalOverlay.classList.remove("active");
+window.addEventListener('click', ({ target }) => {
+  if (target.classList.contains('modal-close')) {
+    modalOverlay.classList.remove('active');
   }
 });

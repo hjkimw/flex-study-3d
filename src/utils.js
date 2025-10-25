@@ -59,6 +59,7 @@ export function setActive({
   // Player가 spotMesh 범위 영역에 진입했을 때
   if (isInRange) {
     if (!targetModel.visible) {
+      
       targetModel.visible = true;
 
       spotMesh.material.color.set(config.colors.active);
