@@ -175,6 +175,7 @@ const floorMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(100, 100),
   new THREE.MeshBasicMaterial({
     map: floorTexture,
+    // transparent: true,
   })
 );
 floorMesh.name = 'floor';
@@ -233,6 +234,25 @@ const player = new Player({
 /* -------------------------------------------------------------------------- */
 /*                                Spot Mesh Setting                           */
 /* -------------------------------------------------------------------------- */
+
+const introSpotMeshTexture = textureLoader.load('/assets/images/robot-image-maked.png');
+
+const introSpotMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(10, 10),
+  new THREE.MeshBasicMaterial({
+    map: introSpotMeshTexture,
+    transparent: true,
+  })
+);
+introSpotMesh.position.y = 0.003;
+introSpotMesh.rotation.x = -Math.PI / 2;
+introSpotMesh.receiveShadow = true;
+scene.add(introSpotMesh);
+
+
+const introSpotMeshTexture2 = textureLoader.load('/assets/images/robot-image.png');
+
+
 const spotMeshes = [];
 
 
@@ -429,9 +449,7 @@ Promise.all([
 
   const introTl = gsap.timeline({
     delay: 1.5,
-    onComplete() {
-      introLock = true;
-    },
+    onComplete: ()=> introLock = true,
   });
 
   introTl.to(camera.position, {
@@ -444,9 +462,8 @@ Promise.all([
     duration: 2.5,
     ease: 'none',
     immediateRender: false,
-    onUpdate() {
-      camera.lookAt(0, 0, 0);
-    },
+    onUpdate: ()=> camera.lookAt(0, 0, 0),
+    onComplete: ()=> introSpotMesh.material.map = introSpotMeshTexture2,
   }, '<')
 
   introTl.to(player.modelMesh.position, {
@@ -459,6 +476,7 @@ Promise.all([
     ease: 'power2.in',
     onComplete() {
       gsap.to(pointer.material, { opacity: .35 })
+      gsap.to(introSpotMesh.material, { opacity: 0 })
     },
   })
 
@@ -617,7 +635,7 @@ window.addEventListener('keydown', ({ code }) => {
   switch (code.toUpperCase()) {
     case 'SPACE':
       if (!isKeydown) {
-        animationCameraLock = true;
+        // animationCameraLock = true;
         isKeydown = true;
         isJumping = true;
 
@@ -630,7 +648,6 @@ window.addEventListener('keydown', ({ code }) => {
         tl.to(player.modelMesh.position, { y: 0.3 });
 
         setTimeout(() => {
-          animationCameraLock = false;
           isKeydown = false;
           isJumping = false;
 
