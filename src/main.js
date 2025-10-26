@@ -16,7 +16,6 @@ const roomStates = {
 
 let introLock = false;
 
-// 임시 데이터
 const modalData = {
   roomOne: {
     title: 'Room One',
@@ -476,15 +475,6 @@ function checkIntersects() {
   const intersects = raycaster.intersectObjects(meshes);
 
   for (const item of intersects) {
-    if (item.object.name === 'room') {
-      console.log('room');
-      break;
-    }
-
-    if (item.object.name === 'player') {
-      console.log('player');
-      break;
-    }
 
     if (item.object.name === 'floor') {
       const newDestination = {

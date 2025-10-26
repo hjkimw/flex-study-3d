@@ -1,4 +1,4 @@
-import gsap from "gsap";
+import gsap from 'gsap';
 
 /**
  * Player가 특정 영역에 진입/이탈할 때 모델 표시/숨김 처리
@@ -10,15 +10,7 @@ import gsap from "gsap";
  * @param {THREE.Camera} params.camera - 카메라 객체
  * @param {Object} params.animationConfig - 애니메이션 설정 (선택)
  */
-export function setActive({
-  spotMesh,
-  spotMeshHalfDistanceXZ = 5,
-  player,
-  targetModel,
-  camera,
-  animationConfig = {},
-}) {
-  
+export function setActive({ spotMesh, spotMeshHalfDistanceXZ = 5, player, targetModel, camera, animationConfig = {} }) {
   // Default Animation Config
   const config = {
     targetModel: {
@@ -49,17 +41,13 @@ export function setActive({
     Math.abs(spotMesh.position.x - player.modelMesh.position.x) < spotMeshHalfDistanceXZ &&
     Math.abs(spotMesh.position.z - player.modelMesh.position.z) < spotMeshHalfDistanceXZ;
 
+  // console.log(targetModel);
 
-    // console.log(targetModel);
-
-    console.log(targetModel);
-    
-    
+  console.log(targetModel);
 
   // Player가 spotMesh 범위 영역에 진입했을 때
   if (isInRange) {
     if (!targetModel.visible) {
-      
       targetModel.visible = true;
 
       spotMesh.material.color.set(config.colors.active);
@@ -71,7 +59,25 @@ export function setActive({
         duration: config.targetModel.activeDuration,
         y: config.targetModel.activeY,
         ease: 'Bounce.easeOut',
-});
+      });
+
+      // 커지면서 바운스 효과
+      tl.fromTo(
+        targetModel.modelMesh.scale,
+        {
+          x: 0,
+          y: 0,
+          z: 0,          
+        },
+        {
+          x: 0.016,
+          y: 0.016,
+          z: 0.016,
+          duration: config.targetModel.activeDuration,
+          ease: 'Bounce.easeOut',
+        },
+        '<'
+      );
 
       // player 위치 조정하고
       tl.to(
@@ -84,10 +90,7 @@ export function setActive({
         '<'
       );
 
-      targetModel.openModal();
-
-console.log('openModal');
-
+      console.log('openModal');
 
       // 카메라의 위치 조정
       // tl.to(
@@ -100,7 +103,6 @@ console.log('openModal');
       // );
     }
   } else {
-    
     // Player가 spotMesh 범위 영역에 벗어났을 때
     if (targetModel.visible) {
       targetModel.visible = false;
