@@ -226,6 +226,11 @@ const player = new Player({
     this.modelMesh.add(directionalLight);
     initY = this.modelMesh.position.y;
   },
+  position: {
+    x: 0,
+    y: -8,
+    z: 0,
+  },
 });
 
 /* -------------------------------------------------------------------------- */
@@ -451,16 +456,18 @@ Promise.all([
     },
   }, '<')
 
-  introTl.fromTo(player.modelMesh.position, {
-    y: -10,
-  }, {
-    y: 0.3,
-    duration: 1.8,
+  introTl.to(player.modelMesh.position, {
+    y: 4,
     ease: 'power2.out',
+  })
+  introTl.to(player.modelMesh.position, {
+    y: 0.3,
+    duration: .4,
+    ease: 'power2.in',
     onComplete() {
       gsap.to(pointer.material, { opacity: .35 })
     },
-  });
+  })
 
 });
 
@@ -625,9 +632,9 @@ window.addEventListener('keydown', ({ code }) => {
         player.defaultAction.stop();
         player.jumpAction.play();
 
-        const tl = gsap.timeline({ defaults: { duration: 0.5, ease: 'none' } });
-        tl.to(player.modelMesh.position, { y: 4 });
-        tl.to(player.modelMesh.position, { y: initY });
+        const tl = gsap.timeline({ defaults: { duration: 0.5, ease: 'power2.intOut' } });
+        tl.to(player.modelMesh.position, { y: 3 });
+        tl.to(player.modelMesh.position, { y: 0.3 });
 
         setTimeout(() => {
           animationCameraLock = false;

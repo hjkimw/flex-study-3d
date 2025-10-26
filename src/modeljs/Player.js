@@ -1,7 +1,7 @@
 import { AnimationMixer } from "three";
 
 export class Player {
-  constructor({ gltfLoader, scene, meshes, modelSrc, name, callback, hideMeshNames = [] }) {
+  constructor({ gltfLoader, scene, meshes, modelSrc, name, callback, hideMeshNames = [], position = {} }) {
     this.walking = false;
     this.name = name;
     this.scene = scene;
@@ -11,6 +11,9 @@ export class Player {
     this.callback = callback;
     this.name = name;
     this.hideMeshNames = hideMeshNames;
+
+    const {x: pX = 0, y: pY = 0.3, z: pZ = 0} = position;
+    this.position = {x: pX, y: pY, z: pZ};
 
     this.loadPromise = this.init();
   }
@@ -32,7 +35,7 @@ export class Player {
       });
 
     this.modelMesh = glb.scene || glb.scene.children[0];
-    this.modelMesh.position.set(0, 0.3, 0);
+    this.modelMesh.position.set(this.position.x, this.position.y, this.position.z);
 
       this.modelMesh.name = this.name;
 

@@ -90,7 +90,7 @@ export function setActive({ spotMesh, spotMeshHalfDistanceXZ = 5, player, target
         '<'
       );
 
-      console.log('openModal');
+      tl.eventCallback('onComplete', ()=> targetModel.openModal());
 
       // 카메라의 위치 조정
       // tl.to(

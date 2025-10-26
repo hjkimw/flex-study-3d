@@ -11,14 +11,12 @@ export class Room{
     modelSrc,
     callback,
     visible = false,
-    // spotMesh,
     modalData,
   }){
     this.scene = scene;
     this.gltfLoader = gltfLoader;
     this.meshes = meshes;
     this.visible = visible;
-    // this.spotMesh = spotMesh;
     this.modalData = modalData || '';
 
     const {x: pX = 0, y: pY = 0, z: pZ = 0} = position;
@@ -64,11 +62,6 @@ export class Room{
       if(this.callback){
         this.callback();
       }
-
-      // if(this.spotMesh){
-      //   this.spotMesh.position.x = this.position.x;
-      //   this.spotMesh.position.z = this.position.z;
-      // }
 
       resolve();
     });
