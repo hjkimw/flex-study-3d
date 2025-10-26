@@ -459,7 +459,7 @@ Promise.all([
   introTl.to(camera.position, {
     x: cameraPosition.x,
     y: cameraPosition.y,
-    duration: 2.5,
+    duration: 3,
     ease: 'none',
     immediateRender: false,
     onUpdate: ()=> camera.lookAt(0, 0, 0),
@@ -630,7 +630,7 @@ canvas.addEventListener('touchmove', (e) => {
 /*                                Keydown Event                                */
 /* -------------------------------------------------------------------------- */
 window.addEventListener('keydown', ({ code }) => {
-  if (!player.modelMesh) return;
+  if (!player.modelMesh || !introLock) return;
 
   switch (code.toUpperCase()) {
     case 'SPACE':
