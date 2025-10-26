@@ -238,12 +238,14 @@ const player = new Player({
 /* -------------------------------------------------------------------------- */
 const spotMeshes = [];
 
+
+const spotMeshTexture = textureLoader.load('/assets/images/test.png');
+
 const spotMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(10, 10),
   new THREE.MeshStandardMaterial({
-    color: 'yellow',
+    map: spotMeshTexture,
     transparent: true,
-    opacity: 0.5,
   })
 );
 
