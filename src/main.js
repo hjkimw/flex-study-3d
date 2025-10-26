@@ -74,10 +74,7 @@ function checkRoomStates() {
 
 const meshes = [];
 
-let animationCameraLock = false,
-  isKeydown = false,
-  isJumping = false,
-  pendingDestination = null;
+let isKeydown = false, isJumping = false, pendingDestination = null;
 
 /* -------------------------------------------------------------------------- */
 /*                                Texture Setting                             */
@@ -248,11 +245,9 @@ const spotMesh = new THREE.Mesh(
     transparent: true,
   })
 );
-
-// spotMesh.position.set(-5, 0.005, -5);
 spotMesh.position.y = 0.005;
-spotMesh.rotation.x = -Math.PI / 2; // 수평으로 회전
-spotMesh.receiveShadow = true; // 그림자가 표현될 수 있게 설정
+spotMesh.rotation.x = -Math.PI / 2;
+spotMesh.receiveShadow = true; 
 
 for (let i = 0; i < 5; i++) spotMeshes.push(spotMesh.clone());
 
@@ -357,7 +352,6 @@ const roomThree = new Room({
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
   },
-  // spotMesh: spotMeshes[2],
   modalData: modalData.roomThree,
 });
 
@@ -385,7 +379,6 @@ const roomFour = new Room({
     ...roomInitalSetting.scale,
   },
   callback() {},
-  // spotMesh: spotMeshes[3],
   modalData: modalData.roomFour,
 });
 
@@ -413,7 +406,6 @@ const roomFive = new Room({
     ...roomInitalSetting.scale,
   },
   callback() {},
-  // spotMesh: spotMeshes[4],
   modalData: modalData.roomFive,
 });
 
@@ -439,7 +431,6 @@ Promise.all([
     delay: 1.5,
     onComplete() {
       introLock = true;
-      // introAnimationLock = false;
     },
   });
 
