@@ -239,7 +239,7 @@ const player = new Player({
 const spotMeshes = [];
 
 
-const spotMeshTexture = textureLoader.load('/assets/images/test.png');
+const spotMeshTexture = textureLoader.load('/assets/images/test_room.png');
 
 const spotMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(10, 10),
