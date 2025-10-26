@@ -405,7 +405,7 @@ const roomFive = new Room({
   },
   rotation: {
     ...roomInitalSetting.rotation,
-    z: Math.PI / 2,
+    z: 0,
   },
   scale: {
     ...roomInitalSetting.scale,
