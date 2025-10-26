@@ -250,7 +250,6 @@ spotMesh.receiveShadow = true; // 그림자가 표현될 수 있게 설정
 
 for (let i = 0; i < 5; i++) spotMeshes.push(spotMesh.clone());
 
-scene.add(...spotMeshes);
 
 /* -------------------------------------------------------------------------- */
 /*                                Mesh Objects                                */
@@ -288,9 +287,14 @@ const roomOne = new Room({
   scale: {
     ...roomInitalSetting.scale,
   },
-  spotMesh: spotMeshes[0],
+  // spotMesh: spotMeshes[0],
   modalData: modalData.roomOne,
 });
+
+spotMeshes[0].position.x = roomOne.position.x;
+spotMeshes[0].position.z = roomOne.position.z;
+scene.add(spotMeshes[0]);
+
 
 const roomTwo = new Room({
   scene,
@@ -315,9 +319,14 @@ const roomTwo = new Room({
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
   },
-  spotMesh: spotMeshes[1],
+  // spotMesh: spotMeshes[1],
   modalData: modalData.roomTwo,
 });
+
+spotMeshes[1].position.x = roomTwo.position.x;
+spotMeshes[1].position.z = roomTwo.position.z;
+scene.add(spotMeshes[1]);
+
 
 const roomThree = new Room({
   scene,
@@ -342,9 +351,14 @@ const roomThree = new Room({
     directionalLight.castShadow = true;
     this.modelMesh.add(directionalLight);
   },
-  spotMesh: spotMeshes[2],
+  // spotMesh: spotMeshes[2],
   modalData: modalData.roomThree,
 });
+
+spotMeshes[2].position.x = roomThree.position.x;
+spotMeshes[2].position.z = roomThree.position.z;
+scene.add(spotMeshes[2]);
+
 
 const roomFour = new Room({
   scene,
@@ -365,9 +379,14 @@ const roomFour = new Room({
     ...roomInitalSetting.scale,
   },
   callback() {},
-  spotMesh: spotMeshes[3],
+  // spotMesh: spotMeshes[3],
   modalData: modalData.roomFour,
 });
+
+spotMeshes[3].position.x = roomFour.position.x;
+spotMeshes[3].position.z = roomFour.position.z;
+scene.add(spotMeshes[3]);
+
 
 const roomFive = new Room({
   scene,
@@ -388,9 +407,13 @@ const roomFive = new Room({
     ...roomInitalSetting.scale,
   },
   callback() {},
-  spotMesh: spotMeshes[4],
+  // spotMesh: spotMeshes[4],
   modalData: modalData.roomFive,
 });
+
+spotMeshes[4].position.x = roomFive.position.x;
+spotMeshes[4].position.z = roomFive.position.z;
+scene.add(spotMeshes[4]);
 
 /* -------------------------------------------------------------------------- */
 /*                                Intro Animation                             */
@@ -410,7 +433,7 @@ Promise.all([
     delay: 1.5,
     onComplete() {
       introLock = true;
-      introAnimationLock = false;
+      // introAnimationLock = false;
     },
   });
 
