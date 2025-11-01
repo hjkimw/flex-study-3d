@@ -2,65 +2,65 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import gsap from 'gsap';
 import { Player } from './modeljs/Player.js';
-import { Room } from './modeljs/Room.js';
+import { Cube } from './modeljs/Cube.js';
 import { debounce } from 'es-toolkit';
 import { setActive } from './utils.js';
 import { Barricade } from './modeljs/Barricade.js';
 import * as CANNON from 'cannon-es';
 
-const roomStates = {
-  roomOne: false,
-  roomTwo: false,
-  roomThree: false,
-  roomFour: false,
+const cubeStates = {
+  cubeOne: false,
+  cubeTwo: false,
+  cubeThree: false,
+  cubeFour: false,
 };
 
 let introLock = false;
 
 const modalData = {
-  roomOne: {
-    title: 'Room One',
+  cubeOne: {
+    title: 'Cube One',
     image: '/assets/images/bg.jpg',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
-  roomTwo: {
-    title: 'Room Two',
+  cubeTwo: {
+    title: 'Cube Two',
     image: '/assets/images/bg.jpg',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
-  roomThree: {
-    title: 'Room Three',
+  cubeThree: {
+    title: 'Cube Three',
     image: '/assets/images/bg.jpg',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
-  roomFour: {
-    title: 'Room Four',
+  cubeFour: {
+    title: 'Cube Four',
     image: '/assets/images/bg.jpg',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
 };
 
-// 룸 상태 변화 감지 및 처리
-function checkRoomStates() {
-  const rooms = [
-    { spotMesh: spotMeshes[0], targetModel: roomOne, stateKey: 'roomOne' },
-    { spotMesh: spotMeshes[1], targetModel: roomTwo, stateKey: 'roomTwo' },
-    { spotMesh: spotMeshes[2], targetModel: roomThree, stateKey: 'roomThree' },
-    { spotMesh: spotMeshes[3], targetModel: roomFour, stateKey: 'roomFour' },
+// Cube 상태 변화 감지 및 처리
+function checkCubeStates() {
+  const cubes = [
+    { spotMesh: spotMeshes[0], targetModel: cubeOne, stateKey: 'cubeOne' },
+    { spotMesh: spotMeshes[1], targetModel: cubeTwo, stateKey: 'cubeTwo' },
+    { spotMesh: spotMeshes[2], targetModel: cubeThree, stateKey: 'cubeThree' },
+    { spotMesh: spotMeshes[3], targetModel: cubeFour, stateKey: 'cubeFour' },
   ];
 
-  rooms.forEach(({ spotMesh, targetModel, stateKey }) => {
+  cubes.forEach(({ spotMesh, targetModel, stateKey }) => {
     const isInRange =
       Math.abs(spotMesh.position.x - player.modelMesh.position.x) < 5 &&
       Math.abs(spotMesh.position.z - player.modelMesh.position.z) < 5;
 
     // 상태가 변경된 경우에만 setActive 호출
-    if (isInRange !== roomStates[stateKey]) {
-      roomStates[stateKey] = isInRange;
+    if (isInRange !== cubeStates[stateKey]) {
+      cubeStates[stateKey] = isInRange;
       setActive({ spotMesh, player, targetModel, camera });
     }
   });
@@ -93,8 +93,7 @@ const playerContactMaterial = new CANNON.ContactMaterial(playerCannonMaterial, d
 cannonWorld.addContactMaterial(playerContactMaterial);
 cannonWorld.defaultContactMaterial = defaultContactMaterial;
 
-// 물리엔진 적용 객체 배열
-const cannonObjects = [];
+
 
 /* -------------------------------------------------------------------------- */
 /*                                Texture Setting                             */
@@ -204,7 +203,6 @@ const floorMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(100, 100),
   new THREE.MeshBasicMaterial({
     map: floorTexture,
-    // transparent: true,
   })
 );
 floorMesh.name = 'floor';
@@ -213,7 +211,7 @@ floorMesh.receiveShadow = true;
 scene.add(floorMesh);
 meshes.push(floorMesh);
 
-// 바닥 물리 바디 추가
+
 const floorShape = new CANNON.Plane();
 const floorBody = new CANNON.Body({
   mass: 0, // fixed
@@ -271,7 +269,7 @@ const player = new Player({
     directionalLight.castShadow = true;
 
     this.modelMesh.add(directionalLight);
-    initY = this.modelMesh.position.y;
+    // initY = this.modelMesh.position.y;
   },
   position: {
     x: 0,
@@ -326,12 +324,6 @@ for (let i = 0; i < 5; i++) spotMeshes.push(spotMesh.clone());
 /* -------------------------------------------------------------------------- */
 /*                                Mesh Objects                                */
 /* -------------------------------------------------------------------------- */
-
-
-
-
-
-
 
 // 왼쪽 벽
 const barricadeLeft = new Barricade({
@@ -412,21 +404,7 @@ const barricadeBottom = new Barricade({
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const roomInitalSetting = {
+const cubeInitalSetting = {
   position: {
     y: -8,
   },
@@ -434,125 +412,116 @@ const roomInitalSetting = {
     x: Math.PI / 2,
   },
   scale: {
-    x: 0.016,
-    y: 0.016,
-    z: 0.016,
+    x: 1,
+    y: 1,
+    z: 1,
   },
 };
 
 // room one
-const roomOne = new Room({
+const cubeOne = new Cube({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: '/assets/models/Room_7.glb',
-  name: 'room',
+  name: 'cubeOne',
   position: {
-    ...roomInitalSetting.position,
+    ...cubeInitalSetting.position,
     x: -13,
     z: -10,
   },
   rotation: {
-    ...roomInitalSetting.rotation,
+    ...cubeInitalSetting.rotation,
   },
   scale: {
-    ...roomInitalSetting.scale,
+    ...cubeInitalSetting.scale,
   },
-  modalData: modalData.roomOne,
+  modalData: modalData.cubeOne,
 });
 
-spotMeshes[0].position.x = roomOne.position.x;
-spotMeshes[0].position.z = roomOne.position.z;
+spotMeshes[0].position.x = cubeOne.position.x;
+spotMeshes[0].position.z = cubeOne.position.z;
 scene.add(spotMeshes[0]);
 
 
-const roomTwo = new Room({
+const cubeTwo = new Cube({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: '/assets/models/Room_7.glb',
-  name: 'roomTwo',
+  name: 'cubeTwo',
   position: {
-    ...roomInitalSetting.position,
+    ...cubeInitalSetting.position,
     x: 13.5,
     z: -10,
   },
   rotation: {
-    ...roomInitalSetting.rotation,
+    ...cubeInitalSetting.rotation,
     z: Math.PI / 2,
   },
   scale: {
-    ...roomInitalSetting.scale,
+    ...cubeInitalSetting.scale,
   },
   callback() {
-    const directionalLight = new THREE.DirectionalLight('white', 5);
-    directionalLight.castShadow = true;
-    this.modelMesh.add(directionalLight);
+
   },
   // spotMesh: spotMeshes[1],
-  modalData: modalData.roomTwo,
+  modalData: modalData.cubeTwo,
 });
 
-spotMeshes[1].position.x = roomTwo.position.x;
-spotMeshes[1].position.z = roomTwo.position.z;
+spotMeshes[1].position.x = cubeTwo.position.x;
+spotMeshes[1].position.z = cubeTwo.position.z;
 scene.add(spotMeshes[1]);
 
 
-const roomThree = new Room({
+const cubeThree = new Cube({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: '/assets/models/Room_20.glb',
-  name: 'roomThree',
+  name: 'cubeThree',
   position: {
-    ...roomInitalSetting.position,
+    ...cubeInitalSetting.position,
     x: -13.5,
     z: 10,
   },
   rotation: {
-    ...roomInitalSetting.rotation,
+    ...cubeInitalSetting.rotation,
     z: Math.PI / 2,
   },
   scale: {
-    ...roomInitalSetting.scale,
+    ...cubeInitalSetting.scale,
   },
   callback() {
-    const directionalLight = new THREE.DirectionalLight('white', 5);
-    directionalLight.castShadow = true;
-    this.modelMesh.add(directionalLight);
+
   },
-  modalData: modalData.roomThree,
+  modalData: modalData.cubeThree,
 });
 
-spotMeshes[2].position.x = roomThree.position.x;
-spotMeshes[2].position.z = roomThree.position.z;
+spotMeshes[2].position.x = cubeThree.position.x;
+spotMeshes[2].position.z = cubeThree.position.z;
 scene.add(spotMeshes[2]);
 
 
-const roomFour = new Room({
+const cubeFour = new Cube({
   scene,
   gltfLoader,
   meshes,
-  modelSrc: '/assets/models/Room_20.glb',
-  name: 'roomFour',
+  name: 'cubeFour',
   position: {
-    ...roomInitalSetting.position,
+    ...cubeInitalSetting.position,
     x: 12.5,
     z: 9.5,
   },
   rotation: {
-    ...roomInitalSetting.rotation,
-    z: Math.PI / 2,
+    ...cubeInitalSetting.rotation,
   },
   scale: {
-    ...roomInitalSetting.scale,
+    ...cubeInitalSetting.scale,
   },
   callback() {},
-  modalData: modalData.roomFour,
+  modalData: modalData.cubeFour,
 });
 
-spotMeshes[3].position.x = roomFour.position.x;
-spotMeshes[3].position.z = roomFour.position.z;
+spotMeshes[3].position.x = cubeFour.position.x;
+spotMeshes[3].position.z = cubeFour.position.z;
 scene.add(spotMeshes[3]);
 
 
@@ -564,10 +533,10 @@ scene.add(spotMeshes[3]);
 
 Promise.all([
   player.loadPromise,
-  roomOne.loadPromise,
-  roomTwo.loadPromise,
-  roomThree.loadPromise,
-  roomFour.loadPromise,
+  cubeOne.loadPromise,
+  cubeTwo.loadPromise,
+  cubeThree.loadPromise,
+  cubeFour.loadPromise,
 ]).then(() => {
 
   if (isDevMode) {
@@ -747,19 +716,26 @@ function draw() {
       }
 
       // Room 상태 변화 감지
-      checkRoomStates();
+      checkCubeStates();
     } else {
       player.walkingAction.stop();
       player.defaultAction.play();
     }
   }
 
-  // 바리케이드 물리 동기화
-  [barricadeLeft, barricadeRight, barricadeTop, barricadeBottom].forEach(barricade => {
-    if (barricade && barricade.cannonBody) {
-      barricade.updateFromPhysics();
-    }
-  });
+  // 바리케이드 물리 동기화 (고정 물체이므로 동기화 불필요)
+  // [barricadeLeft, barricadeRight, barricadeTop, barricadeBottom].forEach(barricade => {
+  //   if (barricade && barricade.cannonBody) {
+  //     barricade.updateFromPhysics();
+  //   }
+  // });
+
+  // 큐브들 물리 동기화 (고정 물체이고 GSAP으로 애니메이션 되므로 동기화 불필요)
+  // [cubeOne, cubeTwo, cubeThree, cubeFour].forEach(cube => {
+  //   if (cube && cube.cannonBody) {
+  //     cube.updateFromPhysics();
+  //   }
+  // });
 
   renderer.render(scene, camera);
   renderer.setAnimationLoop(draw);
@@ -816,12 +792,12 @@ window.addEventListener('keydown', ({ code }) => {
         // 물리 바디가 있으면 물리 바디도 함께 애니메이션
         if (player.cannonBody) {
           tl.to(player.cannonBody.position, { y: 3 });
-          tl.to(player.cannonBody.position, { y: 0.3 });
+          tl.to(player.cannonBody.position, { y: 0 });
           tl.to(player.modelMesh.position, { y: 3 }, 0);
-          tl.to(player.modelMesh.position, { y: 0.3 }, 0.5);
+          tl.to(player.modelMesh.position, { y: 0 }, 0.5);
         } else {
           tl.to(player.modelMesh.position, { y: 3 });
-          tl.to(player.modelMesh.position, { y: 0.3 });
+          tl.to(player.modelMesh.position, { y: 0 });
         }
 
         setTimeout(() => {

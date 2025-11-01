@@ -14,8 +14,8 @@ export function setActive({ spotMesh, spotMeshHalfDistanceXZ = 5, player, target
   // Default Animation Config
   const config = {
     targetModel: {
-      activeY: 0.3,
-      hiddenY: -8,
+      activeY: 3.5,
+      hiddenY: -3.5,
       activeDuration: 1,
       hiddenDuration: 0.5,
     },
@@ -41,9 +41,10 @@ export function setActive({ spotMesh, spotMeshHalfDistanceXZ = 5, player, target
     Math.abs(spotMesh.position.x - player.modelMesh.position.x) < spotMeshHalfDistanceXZ &&
     Math.abs(spotMesh.position.z - player.modelMesh.position.z) < spotMeshHalfDistanceXZ;
 
-  // console.log(targetModel);
-
-  console.log(targetModel);
+  // modelMesh가 아직 로드되지 않았으면 리턴
+  if (!targetModel.modelMesh) {
+    return;
+  }
 
   // Player가 spotMesh 범위 영역에 진입했을 때
   if (isInRange) {
@@ -67,12 +68,30 @@ export function setActive({ spotMesh, spotMeshHalfDistanceXZ = 5, player, target
         {
           x: 0,
           y: 0,
-          z: 0,          
+          z: 0,
         },
         {
-          x: 0.016,
-          y: 0.016,
-          z: 0.016,
+          x: 1,
+          y: 1,
+          z: 1,
+          duration: config.targetModel.activeDuration,
+          ease: 'Bounce.easeOut',
+        },
+        '<'
+      );
+
+      // 회전
+      tl.fromTo(
+        targetModel.modelMesh.rotation,
+        {
+          // x: Math.PI / 2,
+          // y: Math.PI / 2,
+          z: Math.PI * 4,
+        },
+        {
+          // x: 0,
+          y: 0,
+          // z: 0,
           duration: config.targetModel.activeDuration,
           ease: 'Bounce.easeOut',
         },
@@ -80,17 +99,17 @@ export function setActive({ spotMesh, spotMeshHalfDistanceXZ = 5, player, target
       );
 
       // player 위치 조정하고
-      tl.to(
-        player.modelMesh.position,
-        {
-          duration: config.player.duration,
-          y: config.player.activeY,
-          ease: 'Bounce.easeOut',
-        },
-        '<'
-      );
+      // tl.to(
+      //   player.modelMesh.position,
+      //   {
+      //     duration: config.player.duration,
+      //     y: config.player.activeY,
+      //     ease: 'Bounce.easeOut',
+      //   },
+      //   '<'
+      // );
 
-      tl.eventCallback('onComplete', ()=> targetModel.openModal());
+      // tl.eventCallback('onComplete', ()=> targetModel.openModal());
 
       // 카메라의 위치 조정
       // tl.to(
@@ -117,15 +136,15 @@ export function setActive({ spotMesh, spotMeshHalfDistanceXZ = 5, player, target
       });
 
       // player 위치 원상복구 하고
-      tl.to(
-        player.modelMesh.position,
-        {
-          duration: config.player.duration,
-          y: config.player.normalY,
-          ease: 'Bounce.easeOut',
-        },
-        '<'
-      );
+      // tl.to(
+      //   player.modelMesh.position,
+      //   {
+      //     duration: config.player.duration,
+      //     y: config.player.normalY,
+      //     ease: 'Bounce.easeOut',
+      //   },
+      //   '<'
+      // );
 
       // 카메라 위치 원상복구
       // tl.to(

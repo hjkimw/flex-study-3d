@@ -1,5 +1,6 @@
+import * as THREE from 'three';
 
-export class Room{
+export class Cube{
   constructor({
     scene,
     gltfLoader,
@@ -35,17 +36,25 @@ export class Room{
 
   init(){
     return new Promise(async (resolve) => {
-      console.log(this.gltfLoader);
 
-      const glb = await this.gltfLoader.loadAsync(this.modelSrc);
+      if(this.modelSrc){
+        const glb = await this.gltfLoader.loadAsync(this.modelSrc);
 
-      this.modelMesh = glb.scene.children[0];
-      this.modelMesh.traverse(child => {
-        if(child.isMesh){
-          child.castShadow = true;
-          child.name = this.name;
-        }
-      });
+        this.modelMesh = glb.scene.children[0];
+        this.modelMesh.traverse(child => {
+          if(child.isMesh){
+            child.castShadow = true;
+            child.name = this.name;
+          }
+        });
+
+      }else{
+
+        this.modelMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(4, 4, 2.5),
+          new THREE.MeshBasicMaterial({color: 0x00ff00})
+        );
+      }
 
       this.modelMesh.position.set(this.position.x, this.position.y, this.position.z);
       // this.modelMesh.position.y = .3
