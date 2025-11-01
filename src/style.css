@@ -8,6 +8,112 @@ body{
   overflow: hidden;
 }
 
+
+.input-wrapper{
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  z-index: 10;
+  transform: translate(-50%, 0);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.intro-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.intro-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-custom {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox-custom::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.checkbox-custom::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 12px;
+  border: 2.5px solid rgba(30, 30, 30, 0.9);
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) scale(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+}
+
+.intro-checkbox:checked + .checkbox-custom {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.intro-checkbox:checked + .checkbox-custom::before {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.intro-checkbox:checked + .checkbox-custom::after {
+  transform: rotate(45deg) scale(1);
+  opacity: 1;
+}
+
+.intro-checkbox-label:hover .checkbox-custom {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 0 24px rgba(255, 255, 255, 0.15);
+}
+
+.intro-checkbox-label:active .checkbox-custom {
+  transform: translateY(0) scale(0.95);
+}
+
 .modal-trigger:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);

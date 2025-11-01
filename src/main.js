@@ -8,6 +8,8 @@ import { setActive } from './utils.js';
 import { Barricade } from './modeljs/Barricade.js';
 import * as CANNON from 'cannon-es';
 
+const introCheckbox = document.querySelector('.intro-checkbox');
+
 const cubeStates = {
   cubeOne: false,
   cubeTwo: false,
@@ -140,7 +142,7 @@ const introCameraPosition = new THREE.Vector3(0, 20, 0);
 const cameraPosition = new THREE.Vector3(1, 5, 5);
 
 // 개발 모드
-const isDevMode = true;
+const isDevMode = false;
 
 // 개발 모드일 때는 바로 최종 카메라 위치로 설정 아니면 인트로 위치로 설정
 camera.position.set(
@@ -558,6 +560,7 @@ Promise.all([
    
     const introTl = gsap.timeline({
       delay: 1.5,
+      paused: true,
       onComplete: ()=> introLock = true,
     });
 
@@ -588,7 +591,18 @@ Promise.all([
         gsap.to(introSpotMesh.material, { opacity: 0 })
       },
     })
+
+    addEventListener('click', ()=> {
+
+      if(introCheckbox.checked){        
+        introTl.play();
+        gsap.to('.input-wrapper', { opacity: 0, duration: 1, ease: 'power2.in' });
+      }
+      
+    });
+
   }
+
 
 });
 
@@ -773,53 +787,53 @@ canvas.addEventListener('touchmove', (e) => {
 /* -------------------------------------------------------------------------- */
 /*                                Keydown Event                                */
 /* -------------------------------------------------------------------------- */
-window.addEventListener('keydown', ({ code }) => {
-  if (!player.modelMesh || !introLock) return;
+// window.addEventListener('keydown', ({ code }) => {
+//   if (!player.modelMesh || !introLock) return;
 
-  switch (code.toUpperCase()) {
-    case 'SPACE':
-      if (!isKeydown) {
-        // animationCameraLock = true;
-        isKeydown = true;
-        isJumping = true;
+//   switch (code.toUpperCase()) {
+//     case 'SPACE':
+//       if (!isKeydown) {
+//         // animationCameraLock = true;
+//         isKeydown = true;
+//         isJumping = true;
 
-        player.walkingAction.stop();
-        player.defaultAction.stop();
-        player.jumpAction.play();
+//         player.walkingAction.stop();
+//         player.defaultAction.stop();
+//         player.jumpAction.play();
 
-        const tl = gsap.timeline({ defaults: { duration: 0.5, ease: 'power2.intOut' } });
+//         const tl = gsap.timeline({ defaults: { duration: 0.5, ease: 'power2.intOut' } });
 
-        // 물리 바디가 있으면 물리 바디도 함께 애니메이션
-        if (player.cannonBody) {
-          tl.to(player.cannonBody.position, { y: 3 });
-          tl.to(player.cannonBody.position, { y: 0 });
-          tl.to(player.modelMesh.position, { y: 3 }, 0);
-          tl.to(player.modelMesh.position, { y: 0 }, 0.5);
-        } else {
-          tl.to(player.modelMesh.position, { y: 3 });
-          tl.to(player.modelMesh.position, { y: 0 });
-        }
+//         // 물리 바디가 있으면 물리 바디도 함께 애니메이션
+//         if (player.cannonBody) {
+//           tl.to(player.cannonBody.position, { y: 3 });
+//           tl.to(player.cannonBody.position, { y: 0 });
+//           tl.to(player.modelMesh.position, { y: 3 }, 0);
+//           tl.to(player.modelMesh.position, { y: 0 }, 0.5);
+//         } else {
+//           tl.to(player.modelMesh.position, { y: 3 });
+//           tl.to(player.modelMesh.position, { y: 0 });
+//         }
 
-        setTimeout(() => {
-          isKeydown = false;
-          isJumping = false;
+//         setTimeout(() => {
+//           isKeydown = false;
+//           isJumping = false;
 
-          // 점프 중에 클릭한 목적지가 있으면 이동 시작하게 서ㄹ정
-          if (pendingDestination) {
-            destinationPoint.x = pendingDestination.x;
-            destinationPoint.z = pendingDestination.z;
-            destinationPoint.y = pendingDestination.y;
+//           // 점프 중에 클릭한 목적지가 있으면 이동 시작하게 서ㄹ정
+//           if (pendingDestination) {
+//             destinationPoint.x = pendingDestination.x;
+//             destinationPoint.z = pendingDestination.z;
+//             destinationPoint.y = pendingDestination.y;
 
-            player.modelMesh.lookAt(destinationPoint);
+//             player.modelMesh.lookAt(destinationPoint);
 
-            player.walking = true;
-            pendingDestination = null;
-          }
-        }, tl.duration() * 1500);
-      }
-      break;
-  }
-});
+//             player.walking = true;
+//             pendingDestination = null;
+//           }
+//         }, tl.duration() * 1500);
+//       }
+//       break;
+//   }
+// });
 
 /* -------------------------------------------------------------------------- */
 /*                                 Resize Event                                */
