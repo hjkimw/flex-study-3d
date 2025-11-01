@@ -341,18 +341,84 @@ for (let i = 0; i < 5; i++) spotMeshes.push(spotMesh.clone());
 
 
 
-const barricade = new Barricade({
+// 왼쪽 벽
+const barricadeLeft = new Barricade({
   scene,
   cannonWorld,
   cannonMaterial: defaultCannonMaterial,
-  cannonShape: new CANNON.Box(new CANNON.Vec3(5, 5, 5)),
+  cannonShape: new CANNON.Box(new CANNON.Vec3(5, 5, 50)),
   mass: 0, // fixed
   position: {
-    x: 10,
-    // y: 0,
-    // z: 0,
+    x: -25,
+    y: 5,
+    z: 0,
   },
+  scale: {
+    x: 0.1,
+    y: 1,
+    z: 5,
+  }
 });
+
+// 오른쪽 벽
+const barricadeRight = new Barricade({
+  scene,
+  cannonWorld,
+  cannonMaterial: defaultCannonMaterial,
+  cannonShape: new CANNON.Box(new CANNON.Vec3(5, 5, 50)),
+  mass: 0, // fixed
+  position: {
+    x: 25,
+    y: 5,
+    z: 0,
+  },
+  scale: {
+    x: 0.1,
+    y: 1,
+    z: 5,
+  }
+});
+
+// 위쪽 벽
+const barricadeTop = new Barricade({
+  scene,
+  cannonWorld,
+  cannonMaterial: defaultCannonMaterial,
+  cannonShape: new CANNON.Box(new CANNON.Vec3(50, 5, 5)),
+  mass: 0, // fixed
+  position: {
+    x: 0,
+    y: 5,
+    z: -25,
+  },
+  scale: {
+    x: 5,
+    y: 1,
+    z: 0.1,
+  }
+});
+
+// 아래쪽 벽
+const barricadeBottom = new Barricade({
+  scene,
+  cannonWorld,
+  cannonMaterial: defaultCannonMaterial,
+  cannonShape: new CANNON.Box(new CANNON.Vec3(50, 5, 5)),
+  mass: 0, // fixed
+  position: {
+    x: 0,
+    y: 5,
+    z: 25,
+  },
+  scale: {
+    x: 5,
+    y: 1,
+    z: 0.1,
+  }
+});
+
+
+
 
 
 
@@ -725,9 +791,11 @@ function draw() {
   }
 
   // 바리케이드 물리 동기화
-  if (barricade && barricade.cannonBody) {
-    barricade.updateFromPhysics();
-  }
+  [barricadeLeft, barricadeRight, barricadeTop, barricadeBottom].forEach(barricade => {
+    if (barricade && barricade.cannonBody) {
+      barricade.updateFromPhysics();
+    }
+  });
 
   renderer.render(scene, camera);
   renderer.setAnimationLoop(draw);
