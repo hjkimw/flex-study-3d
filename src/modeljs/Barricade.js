@@ -28,7 +28,7 @@ export class Barricade {
   init() {
     this.mesh = new THREE.Mesh(
       new THREE.BoxGeometry(10, 10, 10),
-      new THREE.MeshBasicMaterial({ color: 'red', transparent: true, opacity: 0.5 })
+      new THREE.MeshBasicMaterial({ color: 'red', transparent: true, opacity: 0.2 })
     );
     this.mesh.position.set(this.position.x, this.position.y, this.position.z);
     this.mesh.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
