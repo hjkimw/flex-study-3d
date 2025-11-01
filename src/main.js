@@ -6,6 +6,7 @@ import { Room } from './modeljs/Room.js';
 import { debounce } from 'es-toolkit';
 import { setActive } from './utils.js';
 import { Barricade } from './modeljs/Barricade.js';
+import * as CANNON from 'cannon-es';
 
 const roomStates = {
   roomOne: false,
@@ -76,6 +77,32 @@ function checkRoomStates() {
 const meshes = [];
 
 let isKeydown = false, isJumping = false, pendingDestination = null;
+
+
+const cannonWorld = new CANNON.World();
+cannonWorld.gravity.set(0, -10, 0);
+
+// 물리 재질 설정
+const defaultCannonMaterial = new CANNON.Material('default');
+const playerCannonMaterial = new CANNON.Material('player');
+
+// 접촉 재질 설정
+const defaultContactMaterial = new CANNON.ContactMaterial(defaultCannonMaterial, defaultCannonMaterial, {
+  friction: 1,
+  restitution: 0.2,
+});
+
+const playerContactMaterial = new CANNON.ContactMaterial(playerCannonMaterial, defaultCannonMaterial, {
+  friction: 100,
+  restitution: 0,
+});
+
+// 접촉 재질 등록
+cannonWorld.addContactMaterial(playerContactMaterial);
+cannonWorld.defaultContactMaterial = defaultContactMaterial;
+
+// 물리엔진 적용 객체 배열
+const cannonObjects = [];
 
 /* -------------------------------------------------------------------------- */
 /*                                Texture Setting                             */
@@ -194,6 +221,22 @@ floorMesh.receiveShadow = true;
 scene.add(floorMesh);
 meshes.push(floorMesh);
 
+// 바닥 물리 바디 추가
+const floorShape = new CANNON.Plane();
+const floorBody = new CANNON.Body({
+  mass: 0, // fixed
+  position: new CANNON.Vec3(0, 0, 0),
+  shape: floorShape,
+  material: defaultCannonMaterial,
+});
+
+
+const floorQuaternion = new CANNON.Quaternion();
+floorQuaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+floorBody.quaternion.copy(floorQuaternion);
+
+cannonWorld.addBody(floorBody);
+
 // Loader
 const gltfLoader = new GLTFLoader();
 
@@ -221,6 +264,10 @@ let initY = null;
 // Player
 const player = new Player({
   scene,
+  cannonWorld,
+  cannonMaterial: playerCannonMaterial,
+  cannonShape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)),
+  mass: 1,
   gltfLoader,
   meshes,
   modelSrc: '/assets/models/robot.animated.glb',
@@ -244,15 +291,6 @@ const player = new Player({
 /* -------------------------------------------------------------------------- */
 /*                                Spot Mesh Setting                           */
 /* -------------------------------------------------------------------------- */
-
-const barricade = new Barricade({
-  scene,
-  position: {
-    x: 0,
-    y: 0,
-    z: 0,
-  },
-});
 
 
 
@@ -296,6 +334,39 @@ for (let i = 0; i < 5; i++) spotMeshes.push(spotMesh.clone());
 /* -------------------------------------------------------------------------- */
 /*                                Mesh Objects                                */
 /* -------------------------------------------------------------------------- */
+
+
+
+
+
+
+
+const barricade = new Barricade({
+  scene,
+  cannonWorld,
+  cannonMaterial: defaultCannonMaterial,
+  cannonShape: new CANNON.Box(new CANNON.Vec3(5, 5, 5)),
+  mass: 0, // fixed
+  position: {
+    x: 10,
+    // y: 0,
+    // z: 0,
+  },
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const roomInitalSetting = {
   position: {
@@ -576,6 +647,9 @@ function draw() {
 
   const delta = clock.getDelta();
 
+  // 물리 엔진 업데이트
+  cannonWorld.step(1 / 60, delta, 3);
+
   // 카메라 업데이트
   if (camera.position) {
     camera.updateProjectionMatrix();
@@ -588,6 +662,13 @@ function draw() {
 
   // Player 애니메이션 동작
   if (player.modelMesh) {
+    
+    // 물리 바디가 있으면 중력의 영향을 항상 방지 <- 점프 중이 아닐 때
+    if (player.cannonBody && !isJumping) {
+      player.cannonBody.velocity.set(0, 0, 0);
+      player.cannonBody.angularVelocity.set(0, 0, 0);
+    }
+
     // 목적지에 도달했을 때 걷기 애니메이션 정지
     if (
       player.modelMesh.position.x.toFixed(1) === destinationPoint.x.toFixed(1) &&
@@ -608,8 +689,18 @@ function draw() {
         destinationPoint.x - player.modelMesh.position.x
       );
 
-      player.modelMesh.position.x += Math.cos(angle) * 0.08;
-      player.modelMesh.position.z += Math.sin(angle) * 0.08;
+      // 물리 바디가 있으면 물리 바디의 위치를 업데이트
+      if (player.cannonBody) {
+        player.cannonBody.position.x += Math.cos(angle) * 0.08;
+        player.cannonBody.position.z += Math.sin(angle) * 0.08;
+
+        // 메시를 물리 바디와 동기화
+        player.modelMesh.position.copy(player.cannonBody.position);
+      } else {
+        // 물리 바디가 없으면 기존 방식대로
+        player.modelMesh.position.x += Math.cos(angle) * 0.08;
+        player.modelMesh.position.z += Math.sin(angle) * 0.08;
+      }
 
       camera.position.x = cameraPosition.x + player.modelMesh.position.x;
       camera.position.z = cameraPosition.z + player.modelMesh.position.z;
@@ -631,6 +722,11 @@ function draw() {
       player.walkingAction.stop();
       player.defaultAction.play();
     }
+  }
+
+  // 바리케이드 물리 동기화
+  if (barricade && barricade.cannonBody) {
+    barricade.updateFromPhysics();
   }
 
   renderer.render(scene, camera);
@@ -684,8 +780,17 @@ window.addEventListener('keydown', ({ code }) => {
         player.jumpAction.play();
 
         const tl = gsap.timeline({ defaults: { duration: 0.5, ease: 'power2.intOut' } });
-        tl.to(player.modelMesh.position, { y: 3 });
-        tl.to(player.modelMesh.position, { y: 0.3 });
+
+        // 물리 바디가 있으면 물리 바디도 함께 애니메이션
+        if (player.cannonBody) {
+          tl.to(player.cannonBody.position, { y: 3 });
+          tl.to(player.cannonBody.position, { y: 0.3 });
+          tl.to(player.modelMesh.position, { y: 3 }, 0);
+          tl.to(player.modelMesh.position, { y: 0.3 }, 0.5);
+        } else {
+          tl.to(player.modelMesh.position, { y: 3 });
+          tl.to(player.modelMesh.position, { y: 0.3 });
+        }
 
         setTimeout(() => {
           isKeydown = false;
