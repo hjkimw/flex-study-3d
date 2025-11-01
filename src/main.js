@@ -13,7 +13,6 @@ const roomStates = {
   roomTwo: false,
   roomThree: false,
   roomFour: false,
-  roomFive: false,
 };
 
 let introLock = false;
@@ -43,12 +42,6 @@ const modalData = {
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
   },
-  roomFive: {
-    title: 'Room Five',
-    image: '/assets/images/bg.jpg',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi quia molestiae culpa dolore aspernatur officia illum, numquam eaque, cupiditate quidem eos temporibus nobis assumenda nostrum cumque, aut soluta ratione. Assumenda officia amet veniam consectetur commodi provident eius eaque maxime ullam.',
-  },
 };
 
 // 룸 상태 변화 감지 및 처리
@@ -58,7 +51,6 @@ function checkRoomStates() {
     { spotMesh: spotMeshes[1], targetModel: roomTwo, stateKey: 'roomTwo' },
     { spotMesh: spotMeshes[2], targetModel: roomThree, stateKey: 'roomThree' },
     { spotMesh: spotMeshes[3], targetModel: roomFour, stateKey: 'roomFour' },
-    { spotMesh: spotMeshes[4], targetModel: roomFive, stateKey: 'roomFive' },
   ];
 
   rooms.forEach(({ spotMesh, targetModel, stateKey }) => {
@@ -457,8 +449,8 @@ const roomOne = new Room({
   name: 'room',
   position: {
     ...roomInitalSetting.position,
-    x: -10,
-    z: -20,
+    x: -13,
+    z: -10,
   },
   rotation: {
     ...roomInitalSetting.rotation,
@@ -466,7 +458,6 @@ const roomOne = new Room({
   scale: {
     ...roomInitalSetting.scale,
   },
-  // spotMesh: spotMeshes[0],
   modalData: modalData.roomOne,
 });
 
@@ -483,8 +474,8 @@ const roomTwo = new Room({
   name: 'roomTwo',
   position: {
     ...roomInitalSetting.position,
-    x: 10,
-    z: -20,
+    x: 13.5,
+    z: -10,
   },
   rotation: {
     ...roomInitalSetting.rotation,
@@ -515,8 +506,8 @@ const roomThree = new Room({
   name: 'roomThree',
   position: {
     ...roomInitalSetting.position,
-    x: 0,
-    z: 15,
+    x: -13.5,
+    z: 10,
   },
   rotation: {
     ...roomInitalSetting.rotation,
@@ -546,8 +537,8 @@ const roomFour = new Room({
   name: 'roomFour',
   position: {
     ...roomInitalSetting.position,
-    x: 15,
-    z: -5,
+    x: 12.5,
+    z: 9.5,
   },
   rotation: {
     ...roomInitalSetting.rotation,
@@ -565,32 +556,6 @@ spotMeshes[3].position.z = roomFour.position.z;
 scene.add(spotMeshes[3]);
 
 
-const roomFive = new Room({
-  scene,
-  gltfLoader,
-  meshes,
-  modelSrc: '/assets/models/Room_20.glb',
-  name: 'roomFive',
-  position: {
-    ...roomInitalSetting.position,
-    x: -15,
-    z: -5,
-  },
-  rotation: {
-    ...roomInitalSetting.rotation,
-    z: 0,
-  },
-  scale: {
-    ...roomInitalSetting.scale,
-  },
-  callback() {},
-  modalData: modalData.roomFive,
-});
-
-spotMeshes[4].position.x = roomFive.position.x;
-spotMeshes[4].position.z = roomFive.position.z;
-scene.add(spotMeshes[4]);
-
 
 /* -------------------------------------------------------------------------- */
 /*                                Intro Animation                             */
@@ -603,7 +568,6 @@ Promise.all([
   roomTwo.loadPromise,
   roomThree.loadPromise,
   roomFour.loadPromise,
-  roomFive.loadPromise,
 ]).then(() => {
 
   if (isDevMode) {
