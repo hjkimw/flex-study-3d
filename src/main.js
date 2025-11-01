@@ -5,6 +5,7 @@ import { Player } from './modeljs/Player.js';
 import { Room } from './modeljs/Room.js';
 import { debounce } from 'es-toolkit';
 import { setActive } from './utils.js';
+import { Barricade } from './modeljs/Barricade.js';
 
 const roomStates = {
   roomOne: false,
@@ -119,7 +120,16 @@ const camera = new THREE.OrthographicCamera(
 
 const introCameraPosition = new THREE.Vector3(0, 20, 0);
 const cameraPosition = new THREE.Vector3(1, 5, 5);
-camera.position.set(introCameraPosition.x, introCameraPosition.y, introCameraPosition.z);
+
+// 개발 모드
+const isDevMode = true;
+
+// 개발 모드일 때는 바로 최종 카메라 위치로 설정 아니면 인트로 위치로 설정
+camera.position.set(
+  isDevMode ? cameraPosition.x : introCameraPosition.x,
+  isDevMode ? cameraPosition.y : introCameraPosition.y,
+  isDevMode ? cameraPosition.z : introCameraPosition.z
+);
 
 camera.zoom = 0.1;
 camera.lookAt(0, 0, 0);
@@ -234,6 +244,17 @@ const player = new Player({
 /* -------------------------------------------------------------------------- */
 /*                                Spot Mesh Setting                           */
 /* -------------------------------------------------------------------------- */
+
+const barricade = new Barricade({
+  scene,
+  position: {
+    x: 0,
+    y: 0,
+    z: 0,
+  },
+});
+
+
 
 const introSpotMeshTexture = textureLoader.load('/assets/images/robot-image-maked.png');
 
@@ -433,6 +454,7 @@ spotMeshes[4].position.x = roomFive.position.x;
 spotMeshes[4].position.z = roomFive.position.z;
 scene.add(spotMeshes[4]);
 
+
 /* -------------------------------------------------------------------------- */
 /*                                Intro Animation                             */
 /* -------------------------------------------------------------------------- */
@@ -447,38 +469,56 @@ Promise.all([
   roomFive.loadPromise,
 ]).then(() => {
 
-  const introTl = gsap.timeline({
-    delay: 1.5,
-    onComplete: ()=> introLock = true,
-  });
+  if (isDevMode) {
+    // 개발 모드일 때는 인트로 스킵하고 바로 최종 상태로 설정
+    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    camera.lookAt(0, 0, 0);
+    
+    if (player.modelMesh) {
+      player.modelMesh.position.y = 0.3;
+    }
+    
+    introLock = true;
+    pointer.material.opacity = 0.35;
+    introSpotMesh.material.opacity = 0;
+  
+  
+  } else {
+    // 일반 모드일 때는 인트로 애니메이션 실행
+   
+    const introTl = gsap.timeline({
+      delay: 1.5,
+      onComplete: ()=> introLock = true,
+    });
 
-  introTl.to(camera.position, {
-    z: cameraPosition.z,
-  })
+    introTl.to(camera.position, {
+      z: cameraPosition.z,
+    })
 
-  introTl.to(camera.position, {
-    x: cameraPosition.x,
-    y: cameraPosition.y,
-    duration: 3,
-    ease: 'none',
-    immediateRender: false,
-    onUpdate: ()=> camera.lookAt(0, 0, 0),
-    onComplete: ()=> introSpotMesh.material.map = introSpotMeshTexture2,
-  }, '<')
+    introTl.to(camera.position, {
+      x: cameraPosition.x,
+      y: cameraPosition.y,
+      duration: 3,
+      ease: 'none',
+      immediateRender: false,
+      onUpdate: ()=> camera.lookAt(0, 0, 0),
+      onComplete: ()=> introSpotMesh.material.map = introSpotMeshTexture2,
+    }, '<')
 
-  introTl.to(player.modelMesh.position, {
-    y: 4,
-    ease: 'power2.out',
-  })
-  introTl.to(player.modelMesh.position, {
-    y: 0.3,
-    duration: .4,
-    ease: 'power2.in',
-    onComplete() {
-      gsap.to(pointer.material, { opacity: .35 })
-      gsap.to(introSpotMesh.material, { opacity: 0 })
-    },
-  })
+    introTl.to(player.modelMesh.position, {
+      y: 4,
+      ease: 'power2.out',
+    })
+    introTl.to(player.modelMesh.position, {
+      y: 0.3,
+      duration: .4,
+      ease: 'power2.in',
+      onComplete() {
+        gsap.to(pointer.material, { opacity: .35 })
+        gsap.to(introSpotMesh.material, { opacity: 0 })
+      },
+    })
+  }
 
 });
 
